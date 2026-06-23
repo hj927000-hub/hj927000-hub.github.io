@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hajong Lim — Battery & Product Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --bg:        #0B0E14;
+      --surface:   #13181F;
+      --border:    #1E2530;
+      --accent:    #4DFFC3;   /* cathode green — charged, technical */
+      --accent2:   #1A6B53;
+      --text:      #E8EDF3;
+      --muted:     #6B7785;
+      --tag-bg:    #1A2330;
+      --mono:      'Space Mono', monospace;
+      --sans:      'Space Grotesk', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── NAV ────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(11,14,20,0.88);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.85rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    section {
+      padding: 6rem 0;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── HERO ────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 5rem;
+    }
+
+    .hero-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 6vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 540px;
+      margin-bottom: 2.5rem;
+      line-height: 1.75;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      padding: 0.75rem 1.6rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; text-decoration: none; }
+
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.75rem 1.6rem;
+      border-radius: 4px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); text-decoration: none; }
+
+    /* voltage pulse bar — signature element */
+    .voltage-bar {
+      margin-top: 5rem;
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 36px;
+    }
+
+    .voltage-bar span {
+      display: block;
+      width: 4px;
+      background: var(--accent2);
+      border-radius: 2px;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    .voltage-bar span:nth-child(odd)  { background: var(--accent); }
+    .voltage-bar span:nth-child(3n)   { animation-delay: 0.2s; }
+    .voltage-bar span:nth-child(5n)   { animation-delay: 0.4s; }
+    .voltage-bar span:nth-child(7n)   { animation-delay: 0.6s; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.25; transform: scaleY(0.4); }
+      50%       { opacity: 1;    transform: scaleY(1);   }
+    }
+
+    /* generate heights via JS — inline style hack */
+    .voltage-bar span { transform-origin: bottom; }
+
+    /* ── ABOUT ───────────────────────────────────────────── */
+    #about { border-top: 1px solid var(--border); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-size: 0.97rem;
+    }
+    .about-text p strong { color: var(--text); }
+
+    .about-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .stat-item {
+      border-left: 2px solid var(--accent);
+      padding-left: 1.2rem;
+    }
+
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ── PROJECTS ────────────────────────────────────────── */
+    #projects { border-top: 1px solid var(--border); }
+
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.8rem 2rem;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: default;
+    }
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.6rem;
+      gap: 1rem;
+    }
+
+    .project-title {
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .project-status {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .status-wip  { background: #1A2B1A; color: #6FCF6F; border: 1px solid #2A4A2A; }
+    .status-done { background: #1A1A2B; color: #7B7FEF; border: 1px solid #2A2A4A; }
+    .status-plan { background: #2A2010; color: #C9A04A; border: 1px solid #4A3A1A; }
+
+    .project-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tag {
+      background: var(--tag-bg);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── NOTES / STUDY ───────────────────────────────────── */
+    #notes { border-top: 1px solid var(--border); }
+
+    .notes-intro {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      max-width: 560px;
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .note-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.4rem 1.6rem;
+      transition: border-color 0.2s;
+    }
+    .note-card:hover { border-color: var(--accent); }
+
+    .note-category {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .note-title {
+      font-weight: 500;
+      font-size: 0.92rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .note-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .coming-soon {
+      border-style: dashed;
+      opacity: 0.55;
+    }
+
+    /* ── CONTACT ─────────────────────────────────────────── */
+    #contact {
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    #contact h2 { margin-bottom: 0.75rem; }
+
+    .contact-sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .contact-link:hover { color: var(--accent); text-decoration: none; }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { gap: 1.2rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      .notes-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2.2rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .voltage-bar span { animation: none; opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <span class="nav-logo">HJ.lim</span>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#notes">Notes</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Battery · NPI · Product</p>
+      <h1>Solve<br /><span>Real Problems.</span></h1>
+      <p class="hero-sub">
+        Battery process engineer at LG Energy Solution — turning electrode physics into
+        manufacturable products. Transitioning into NPI and applications engineering
+        where hardware meets product decisions.
+      </p>
+      <div class="hero-cta">
+        <a class="btn-primary" href="#projects">See my work</a>
+        <a class="btn-ghost" href="#contact">Get in touch</a>
+      </div>
+
+      <!-- Signature: voltage pulse — like a battery's charge profile -->
+      <div class="voltage-bar" id="vbar"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <p class="section-label">Background</p>
+      <h2>Background</h2>
+      <div class="about-text">
+        <p>
+          I'm <strong>Hajong Lim</strong> — MS in Chemical Engineering from <strong>UC Berkeley</strong>,
+          BS in Chemistry from <strong>Purdue University</strong>.
+        </p>
+        <p>
+          Currently a Battery Process Engineer at LG Energy Solution Michigan, working on
+          electrode manufacturing. Interested in NPI and product-adjacent roles at the
+          intersection of hardware and real-world impact.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <p class="section-label">Work</p>
+      <h2>Projects</h2>
+      <div class="project-list">
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-title">Wearable Battery Analysis</span>
+            <span class="project-status status-wip">● In progress</span>
+          </div>
+          <p class="project-desc">
+            Analyzing wearable battery behavior — capacity fade, charge-rate tradeoffs,
+            and thermal constraints. Part of a three-chapter portfolio arc:
+            Wearable → Mobility → Large Format.
+          </p>
+          <div class="tag-list">
+            <span class="tag">Python</span>
+            <span class="tag">Pandas</span>
+            <span class="tag">Li-ion</span>
+            <span class="tag">Wearables</span>
+          </div>
+        </div>
+
+        <div class="project-card coming-soon">
+          <div class="project-header">
+            <span class="project-title">Li Plating Detection — ML Dashboard</span>
+            <span class="project-status status-plan">○ Planned</span>
+          </div>
+          <p class="project-desc">
+            Supervised ML model on NASA PCoE / CALCE cycle-aging data to detect lithium
+            plating onset from voltage signatures. Will be deployed as a Streamlit dashboard.
+          </p>
+          <div class="tag-list">
+            <span class="tag">Python</span>
+            <span class="tag">Scikit-learn</span>
+            <span class="tag">Streamlit</span>
+            <span class="tag">Coming soon</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-title">Laser Notching DOE — LG ESMI</span>
+            <span class="project-status status-done">✓ Complete</span>
+          </div>
+          <p class="project-desc">
+            <!-- TODO: Add your own description here -->
+            Cathode laser notching process development at LG Energy Solution Michigan.
+          </p>
+          <div class="tag-list">
+            <span class="tag">DOE</span>
+            <span class="tag">Laser Process</span>
+            <span class="tag">Electrode Mfg</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-title">P2P EV Charging Platform</span>
+            <span class="project-status status-done">✓ Complete</span>
+          </div>
+          <p class="project-desc">
+            "Airbnb for apartment EV charging" — a peer-to-peer charging marketplace concept
+            pitched at Collider Cup XV at UC Berkeley. Covered hardware access, pricing
+            models, and grid integration.
+          </p>
+          <div class="tag-list">
+            <span class="tag">EV</span>
+            <span class="tag">Product Strategy</span>
+            <span class="tag">Berkeley</span>
+            <span class="tag">Pitch</span>
+          </div>
+        </div>
+
+        <div class="project-card coming-soon">
+          <div class="project-header">
+            <span class="project-title">Drone/Mobility Battery Analysis</span>
+            <span class="project-status status-plan">○ Planned</span>
+          </div>
+          <p class="project-desc">
+            Chapter 2 of the portfolio arc — analyzing C-rate constraints and cycle life
+            tradeoffs in drone and light mobility applications.
+          </p>
+          <div class="tag-list">
+            <span class="tag">Coming soon</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
+  <section id="notes">
+    <div class="container">
+      <p class="section-label">Learning</p>
+      <h2>Study Notes</h2>
+      <p class="notes-intro">
+        Public notes from my self-study curriculum — battery electrochemistry, ML for
+        materials, and product engineering fundamentals.
+      </p>
+      <div class="notes-grid">
+
+        <div class="note-card">
+          <p class="note-category">Electrochemistry</p>
+          <p class="note-title">OCV vs Terminal Voltage — Why They Diverge</p>
+          <p class="note-meta">Battery fundamentals · In progress</p>
+        </div>
+
+        <div class="note-card">
+          <p class="note-category">Electrochemistry</p>
+          <p class="note-title">EIS Primer: What the Nyquist Plot Is Telling You</p>
+          <p class="note-meta">Impedance spectroscopy · In progress</p>
+        </div>
+
+        <div class="note-card">
+          <p class="note-category">Python / Data</p>
+          <p class="note-title">Pandas for Battery Data — Practical Notes</p>
+          <p class="note-meta">Data analysis · In progress</p>
+        </div>
+
+        <div class="note-card">
+          <p class="note-category">Product Engineering</p>
+          <p class="note-title">V&amp;V Process Language for Hardware NPI</p>
+          <p class="note-meta">NPI fundamentals · Planned</p>
+        </div>
+
+        <div class="note-card coming-soon">
+          <p class="note-category">EV Systems</p>
+          <p class="note-title">EV Charging Architecture Deep Dive</p>
+          <p class="note-meta">Systems · Planned</p>
+        </div>
+
+        <div class="note-card coming-soon">
+          <p class="note-category">ML</p>
+          <p class="note-title">Detecting Li Plating from dV/dQ Curves</p>
+          <p class="note-meta">ML for batteries · Planned</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <p class="section-label">Connect</p>
+      <h2>Let's talk.</h2>
+      <p class="contact-sub">
+        Open to NPI, applications engineering, and product-adjacent roles in<br />
+        wearables, medical devices, and mobility hardware. Based in Michigan → relocating to Boston.
+      </p>
+      <div class="contact-links">
+        <a class="contact-link" href="https://github.com/YOUR_GITHUB_ID" target="_blank">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013.01-.4c1.02 0 2.05.14 3.01.4 2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a class="contact-link" href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.35-1.85 3.58 0 4.24 2.36 4.24 5.43v6.31zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM3.56 20.45h3.56V9H3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+          LinkedIn
+        </a>
+        <a class="contact-link" href="mailto:YOUR_EMAIL@gmail.com">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4.5l-8 5-8-5V6l8 5 8-5v2.5z"/></svg>
+          Email
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © 2026 Hajong Lim · Built with HTML/CSS · Hosted on GitHub Pages
+  </footer>
+
+  <script>
+    // Generate voltage bar heights to look like a real charge profile
+    const vbar = document.getElementById('vbar');
+    const profile = [12, 16, 14, 20, 26, 30, 28, 32, 36, 33, 30, 28, 34, 36, 32, 30, 28, 26, 22, 20, 18, 16, 14, 12];
+    profile.forEach((h, i) => {
+      const s = document.createElement('span');
+      s.style.height = h + 'px';
+      s.style.animationDelay = (i * 0.07) + 's';
+      vbar.appendChild(s);
+    });
+  </script>
+</body>
+</html>
