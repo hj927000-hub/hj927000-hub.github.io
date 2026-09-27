@@ -1,0 +1,26 @@
+from,to,PU,DO,trips_per_day_tlc,straight_km,straight_pct_below_100ft,detour_km,detour_pct_below_100ft,detour_min_ceiling_ft,car_avg_km,car_avg_min,drone_est_min,minutes_saved,verdict
+Central Harlem,Central Harlem North,41,42,492.2,2.14,0,2.21,0,300.0,2.06,8.4,5.2,3.2,Route fits LAANC ceilings
+Central Harlem North,Central Harlem,42,41,473.9,2.14,0,2.21,0,300.0,2.06,8.6,5.2,3.4,Route fits LAANC ceilings
+Washington Heights North,Washington Heights South,243,244,393.0,2.07,0,2.19,0,400.0,2.15,9.3,5.2,4.1,Route fits LAANC ceilings
+Central Harlem North,East Harlem North,42,74,390.2,1.71,0,1.74,0,300.0,2.72,9.9,4.7,5.2,Route fits LAANC ceilings
+Washington Heights South,Washington Heights North,244,243,385.1,2.07,0,2.19,0,400.0,2.21,8.9,5.2,3.7,Route fits LAANC ceilings
+East Harlem North,East Harlem South,74,75,378.1,1.74,0,1.81,0,300.0,2.14,9.1,4.8,4.3,Route fits LAANC ceilings
+East Harlem South,East Harlem North,75,74,369.3,1.74,0,1.81,0,300.0,2.01,8.2,4.8,3.4,Route fits LAANC ceilings
+East Harlem North,Central Harlem North,74,42,350.1,1.71,0,1.74,0,300.0,2.7,10.5,4.7,5.7,Route fits LAANC ceilings
+Central Harlem,East Harlem North,41,74,343.3,1.17,0,1.14,0,300.0,1.93,9.3,4.1,5.2,Route fits LAANC ceilings
+East Harlem North,Central Harlem,74,41,327.9,1.17,0,1.14,0,300.0,1.86,9.2,4.1,5.1,Route fits LAANC ceilings
+Upper East Side North,Upper East Side South,236,237,323.9,1.51,0,1.63,0,400.0,1.89,10.0,4.6,5.4,Route fits LAANC ceilings
+Central Harlem North,Hamilton Heights,42,116,311.0,0.98,0,0.95,0,300.0,1.85,8.5,3.9,4.5,Route fits LAANC ceilings
+Upper East Side South,Upper East Side North,237,236,309.6,1.51,0,1.63,0,400.0,1.87,9.1,4.6,4.5,Route fits LAANC ceilings
+Times Sq/Theatre District,West Chelsea/Hudson Yards,230,246,281.4,1.9,56,2.56,14,400.0,2.58,13.5,5.6,7.9,Some segments need extra approval
+Lower East Side,East Village,148,79,277.5,1.07,100,1.6,41,400.0,1.59,8.1,4.6,3.5,"Mostly 0 ft or low ceilings, not viable"
+Clinton East,West Chelsea/Hudson Yards,48,246,273.8,1.64,77,2.55,12,400.0,2.09,9.4,5.5,3.8,Some segments need extra approval
+Times Sq/Theatre District,East Chelsea,230,68,269.9,1.84,33,2.17,0,400.0,2.35,13.5,5.2,8.3,Route fits LAANC ceilings
+Hamilton Heights,Washington Heights South,116,244,267.3,1.59,0,1.81,0,300.0,2.2,8.7,4.8,3.9,Route fits LAANC ceilings
+East Village,Lower East Side,79,148,264.1,1.07,100,1.6,41,400.0,1.67,9.5,4.6,4.9,"Mostly 0 ft or low ceilings, not viable"
+West Chelsea/Hudson Yards,Union Sq,246,234,258.3,1.79,21,1.76,21,400.0,2.55,13.4,4.8,8.6,"Mostly 0 ft or low ceilings, not viable"
+TriBeCa/Civic Center,West Village,231,249,256.4,1.8,100,1.92,100,,2.42,10.4,4.9,5.4,"Mostly 0 ft or low ceilings, not viable"
+East Chelsea,West Chelsea/Hudson Yards,68,246,256.3,0.59,80,0.52,60,400.0,1.61,8.3,3.5,4.8,"Mostly 0 ft or low ceilings, not viable"
+Hamilton Heights,Central Harlem North,116,42,255.5,0.98,0,0.95,0,300.0,2.01,8.7,3.9,4.7,Route fits LAANC ceilings
+Upper East Side South,Midtown Center,237,161,254.7,1.51,0,1.51,0,400.0,1.96,12.4,4.5,7.8,Route fits LAANC ceilings
+East Village,West Village,79,249,254.6,1.63,100,3.51,28,400.0,2.25,12.2,6.5,5.7,"Mostly 0 ft or low ceilings, not viable"

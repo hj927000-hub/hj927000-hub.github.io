@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low-altitude Manhattan — where a delivery drone could fly</title>
+<meta name="description" content="A demand and airspace study of drone food delivery in Manhattan, built from NYC trip records, restaurant and housing data, and FAA UAS Facility Maps.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --moss:#3B3A2B;        /* page */
+    --moss-deep:#2B2A1F;   /* hero + feature panels */
+    --moss-line:#55533F;   /* hairlines on dark */
+    --cream:#F3EDDF;       /* text on dark, light panels */
+    --paper:#E8E1CE;       /* secondary light */
+    --sage:#AEAE92;        /* secondary text on dark */
+    --ink:#2B2A1F;         /* text on light */
+    --chart:#5B7FB0;       /* sectional-chart Class B blue: data only */
+    --display:"Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --text:"Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+    --r-lg:28px; --r-md:18px;
+    --wrap:1180px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--moss);color:var(--cream);font:400 17px/1.6 var(--text);-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--chart);outline-offset:3px;border-radius:4px}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 28px}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:10;background:rgba(43,42,31,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--moss-line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .mark{font:500 19px/1 var(--display);letter-spacing:.01em;text-decoration:none}
+  nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0;font-size:15px}
+  nav ul a{text-decoration:none;color:var(--sage)}
+  nav ul a:hover{color:var(--cream)}
+  @media (max-width:760px){nav ul{display:none}}
+
+  /* hero */
+  .hero{background:var(--moss-deep);padding:72px 0 88px}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  h1{font:300 clamp(44px,6.2vw,84px)/1.02 var(--display);letter-spacing:-.02em;margin:0 0 28px;max-width:11ch}
+  .lede{font-size:19px;line-height:1.6;color:var(--paper);max-width:46ch;margin:0 0 32px}
+  .byline{font-size:15px;color:var(--sage);margin:0}
+  .byline strong{color:var(--cream);font-weight:500}
+  .chart-art{background:var(--paper);border-radius:var(--r-lg);aspect-ratio:4/5;position:relative;overflow:hidden}
+  .chart-art svg{width:100%;height:100%;display:block}
+  .chart-art figcaption{position:absolute;left:16px;right:16px;bottom:14px;font-size:12.5px;color:#5E5B46;background:rgba(243,237,223,.92);padding:7px 12px;border-radius:10px}
+  @media (max-width:900px){.hero .wrap{grid-template-columns:1fr}.chart-art{aspect-ratio:1/1;max-width:520px}}
+
+  /* route draw — the one orchestrated motion */
+  .route{stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.4s .4s cubic-bezier(.6,.1,.2,1) forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @media (prefers-reduced-motion:reduce){.route{animation:none;stroke-dashoffset:0}}
+
+  /* sections */
+  section{padding:104px 0 0}
+  section:last-of-type{padding-bottom:104px}
+  h2{font:300 clamp(34px,4.2vw,54px)/1.08 var(--display);letter-spacing:-.015em;margin:0 0 22px;max-width:18ch}
+  h3{font:400 26px/1.2 var(--display);margin:0 0 12px}
+  .prose p{max-width:62ch;color:var(--paper);margin:0 0 18px}
+  .split{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:start}
+  .split.flip{grid-template-columns:1.2fr .8fr}
+  .split.flip > :first-child{order:2}
+  @media (min-width:901px){.split > .prose{position:sticky;top:104px}}
+  @media (max-width:900px){.split,.split.flip{grid-template-columns:1fr}.split.flip > :first-child{order:0}}
+
+  .fact{margin:34px 0 0;padding-top:22px;border-top:1px solid var(--moss-line)}
+  .fact b{display:block;font:300 48px/1 var(--display);color:var(--cream);margin-bottom:8px;letter-spacing:-.01em}
+  .fact span{color:var(--sage);font-size:15px}
+
+  /* embedded results */
+  .panel{background:var(--cream);color:var(--ink);border-radius:var(--r-lg);overflow:hidden}
+  .panel + .panel{margin-top:24px}
+  .panel header{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:22px 26px 0}
+  .panel header h3{font-size:22px}
+  .panel header a{font-size:14px;color:#5E5B46;white-space:nowrap}
+  .embed{height:var(--h,500px);margin:14px 12px 12px;border-radius:var(--r-md);background:var(--paper);position:relative}
+  .embed iframe{width:100%;height:100%;border:0;border-radius:var(--r-md);background:#fff}
+  .embed .empty{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:24px;color:#6E6B55;font-size:15px}
+  .embed .empty code{font-size:13.5px;background:var(--cream);padding:2px 6px;border-radius:6px}
+
+  /* comparison table */
+  .compare{background:var(--moss-deep);border-radius:var(--r-lg);padding:34px 34px 26px}
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  caption{text-align:left;color:var(--sage);font-size:15px;padding-bottom:18px;caption-side:top}
+  th,td{text-align:right;padding:14px 0;border-bottom:1px solid var(--moss-line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-weight:500;color:var(--sage);font-size:14.5px}
+  tbody td{font:300 30px/1 var(--display)}
+  tbody td:first-child{font:500 16px/1.3 var(--text)}
+  tbody td.save{color:#9DB7DA}
+  tbody td.down{color:#D9B38C}
+  tbody.small td{font-size:22px;padding:11px 0}
+  tbody.small td:first-child{font-size:15px}
+  .note{color:var(--sage);font-size:14.5px;margin:18px 0 0;max-width:70ch}
+
+  /* interpretation drafts */
+  .readings{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:40px}
+  @media (max-width:900px){.readings{grid-template-columns:1fr}}
+  .reading{background:var(--moss-deep);border-radius:var(--r-md);padding:30px}
+  .reading p{color:var(--paper);margin:0;font-size:16px;max-width:52ch}
+  .reading h3{color:var(--cream)}
+
+  .limits{background:var(--paper);color:var(--ink);border-radius:var(--r-lg);padding:48px}
+  .limits h2{color:var(--ink)}
+  .limits .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px 48px}
+  .limits p{margin:0;max-width:52ch}
+  .limits strong{font-weight:600}
+  @media (max-width:760px){.limits{padding:30px}.limits .cols{grid-template-columns:1fr}}
+
+  footer{border-top:1px solid var(--moss-line);padding:48px 0 64px;color:var(--sage);font-size:15px}
+  footer .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:40px}
+  footer h3{color:var(--cream);font-size:22px}
+  footer ul{list-style:none;padding:0;margin:0;line-height:2}
+  @media (max-width:760px){footer .wrap{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav aria-label="Page">
+  <div class="wrap">
+    <a class="mark" href="../">HJ Lim</a>
+    <ul>
+      <li><a href="#demand">Demand</a></li>
+      <li><a href="#airspace">Airspace</a></li>
+      <li><a href="#routes">Routes</a></li>
+      <li><a href="#shift">Change</a></li>
+      <li><a href="#reading">Findings</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <h1>Where could a delivery drone actually fly in Manhattan?</h1>
+      <p class="lede">I mapped when and where food orders are likely to land, then laid the FAA's low-altitude ceilings over the same streets to find the first routes that could work, and the ones that can't.</p>
+      <p class="byline"><strong>Hajong (HJ) Lim</strong>, process engineer in battery manufacturing. Data from January 2025 to July 2026.</p>
+    </div>
+
+    <figure class="chart-art" style="margin:0">
+      <svg viewBox="0 0 400 500" role="img" aria-labelledby="art-title">
+        <title id="art-title">Illustration of Manhattan under a grid of drone altitude ceilings, with one route drawn across it</title>
+        <defs>
+          <clipPath id="island">
+            <path d="M118 470 L96 438 L104 396 L126 350 L146 300 L170 252 L196 200 L222 150 L246 104 L268 62 L284 30 L300 22 L306 44 L292 88 L270 138 L246 190 L222 242 L200 292 L178 342 L160 392 L150 436 L138 468 Z"/>
+          </clipPath>
+          <pattern id="water" width="8" height="8" patternUnits="userSpaceOnUse">
+            <path d="M0 8 L8 0" stroke="#D6CEB8" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect width="400" height="500" fill="url(#water)"/>
+        <!-- ceiling grid (illustrative values) -->
+        <g font-family="Hanken Grotesk, Arial, sans-serif" font-size="11" text-anchor="middle">
+          <g stroke="#C8BFA6" stroke-width="1" fill="none">
+            <path d="M0 50H400M0 100H400M0 150H400M0 200H400M0 250H400M0 300H400M0 350H400M0 400H400M0 450H400"/>
+            <path d="M50 0V500M100 0V500M150 0V500M200 0V500M250 0V500M300 0V500M350 0V500"/>
+          </g>
+          <g fill="#8A866C">
+            <text x="325" y="80">0</text><text x="375" y="80">0</text><text x="375" y="130">0</text>
+            <text x="325" y="130">50</text><text x="375" y="180">50</text><text x="325" y="180">100</text>
+            <text x="25" y="230">200</text><text x="75" y="280">200</text><text x="25" y="330">400</text>
+            <text x="75" y="430">100</text><text x="375" y="430">200</text>
+            <text x="325" y="380">200</text><text x="375" y="280">100</text><text x="75" y="130">200</text>
+          </g>
+        </g>
+        <!-- island -->
+        <path d="M118 470 L96 438 L104 396 L126 350 L146 300 L170 252 L196 200 L222 150 L246 104 L268 62 L284 30 L300 22 L306 44 L292 88 L270 138 L246 190 L222 242 L200 292 L178 342 L160 392 L150 436 L138 468 Z" fill="#F3EDDF" stroke="#3B3A2B" stroke-width="1.5"/>
+        <g clip-path="url(#island)" stroke="#D9D1BC" stroke-width=".8">
+          <path d="M60 470 L330 330M60 430 L330 290M60 390 L330 250M60 350 L330 210M60 310 L330 170M60 270 L330 130M60 230 L330 90M60 190 L330 50M60 150 L330 10"/>
+        </g>
+        <!-- Class B arc, in sectional-chart blue -->
+        <path d="M400 238 A190 190 0 0 1 238 0" fill="none" stroke="#5B7FB0" stroke-width="2.5"/>
+        <text x="390" y="262" text-anchor="end" fill="#5B7FB0" font-family="Newsreader, Georgia, serif" font-style="italic" font-size="15">Class B</text>
+        <!-- route -->
+        <path class="route" d="M126 440 C 140 390, 160 340, 174 300 S 214 214, 234 170" fill="none" stroke="#2B2A1F" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="126" cy="440" r="6" fill="#2B2A1F"/>
+        <circle cx="234" cy="170" r="6" fill="#F3EDDF" stroke="#2B2A1F" stroke-width="2.5"/>
+      </svg>
+      <figcaption>Illustration. Numbers show how high the FAA may authorize a small drone, in feet.</figcaption>
+    </figure>
+  </div>
+</header>
+
+<main>
+<section id="question">
+  <div class="wrap split">
+    <div><h2>The densest delivery market in the country is also its hardest sky.</h2></div>
+    <div class="prose">
+      <p>Manhattan has the orders: short trips, dense towers, and streets where a courier spends as much time parking and climbing stairs as riding. It also sits under the Class B airspace of JFK, LaGuardia and Newark, needs an NYPD permit for every takeoff and landing, and still waits on a federal rule for flights beyond the pilot's line of sight.</p>
+      <p>So the useful question isn't whether drones will deliver here. It's which blocks, at which hours, could justify the first corridor.</p>
+    </div>
+  </div>
+</section>
+
+<section id="demand">
+  <div class="wrap split">
+    <div class="prose">
+      <h2>When the orders come</h2>
+      <p>There is no public order-level delivery data for New York, so demand here is modeled from Uber and Lyft trips that start or end in Manhattan, scaled to the city's reported weekly delivery volume.</p>
+      <div class="fact"><b>1.09M</b><span>estimated food deliveries landing in Manhattan each week</span></div>
+      <div class="fact"><b>Saturday</b><span>is the busiest day in both years, about 188,000 estimated deliveries in 2026. Monday is the quietest.</span></div>
+    </div>
+    <div>
+      <article class="panel">
+        <header><h3>Orders by day of week</h3><a href="results/1a_dow_by_year.html">Open full size</a></header>
+        <div class="embed" style="--h:470px" data-src="results/1a_dow_by_year.html"></div>
+      </article>
+      <article class="panel">
+        <header><h3>Hour by hour, every day</h3><a href="results/1b_dow_hour.html">Open full size</a></header>
+        <div class="embed" style="--h:670px" data-src="results/1b_dow_hour.html"></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="where">
+  <div class="wrap split flip">
+    <div class="prose">
+      <h2>Where they start and where they land</h2>
+      <p>Restaurants mark where a delivery begins. Drop-offs show where it ends. The two don't always sit on the same blocks, and the gap between them is the route a drone would have to fly.</p>
+      <div class="fact"><b>12,523</b><span>inspected restaurants in Manhattan, 40% of the city's total</span></div>
+    </div>
+    <div>
+      <article class="panel">
+        <header><h3>Restaurants, pickups and drop-offs</h3><a href="results/2_origin_dropoff_map.html">Open full size</a></header>
+        <div class="embed" style="--h:600px" data-src="results/2_origin_dropoff_map.html"></div>
+      </article>
+      <article class="panel">
+        <header><h3>Morning, lunch and dinner against housing density</h3><a href="results/3_band_map.html">Open full size</a></header>
+        <div class="embed" style="--h:600px" data-src="results/3_band_map.html"></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="airspace">
+  <div class="wrap split">
+    <div class="prose">
+      <h2>The ceiling over every block</h2>
+      <p>The FAA's UAS Facility Maps divide controlled airspace into a grid and set the highest altitude a small drone can be approved for in each cell. A zero means no automatic approval at all.</p>
+      <p>Each high-demand pair of neighborhoods gets a straight line and a detour that avoids low ceilings. The map shows which routes stay above the limit and which don't.</p>
+      <div class="fact"><b>243 of 874</b><span>FAA grid cells over the study area are set at 0 ft, meaning no automatic approval at any height</span></div>
+      <div class="fact"><b>17 of 25</b><span>of the busiest neighborhood pairs have a route that stays under LAANC ceilings the whole way</span></div>
+    </div>
+    <article class="panel" id="routes">
+      <header><h3>Top routes over FAA ceilings</h3><a href="results/5_routes_map.html">Open full size</a></header>
+      <div class="embed" style="--h:640px" data-src="results/5_routes_map.html"></div>
+    </article>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="compare">
+      <table>
+        <caption>Average across the top ten routes in each time window</caption>
+        <thead><tr><th scope="col">Time window</th><th scope="col">By car, min</th><th scope="col">By drone, min</th><th scope="col">Minutes saved</th></tr></thead>
+        <tbody>
+          <tr><td>Morning, 7 to 10</td><td>10.0</td><td>4.9</td><td class="save">5.1</td></tr>
+          <tr><td>Lunch, 11 to 2</td><td>9.7</td><td>4.7</td><td class="save">5.0</td></tr>
+          <tr><td>Dinner, 5 to 9</td><td>10.2</td><td>5.0</td><td class="save">5.2</td></tr>
+        </tbody>
+      </table>
+      <p class="note">Car time is in-vehicle time from trip records, without restaurant waits, parking or the walk to the door. Drone time assumes 60 km/h cruise plus 3 minutes to launch, load and land.</p>
+    </div>
+  </div>
+</section>
+
+<section id="shift">
+  <div class="wrap split">
+    <div class="prose">
+      <h2>How demand moved in a year</h2>
+      <p>Comparing the same months, January to July, total demand barely changed: about 155,400 estimated deliveries a day in 2025 against 154,100 in 2026. Underneath, it shifted. Most of the biggest gains were in upper Manhattan, with Financial District South as the exception, while the west side of Midtown and the blocks around the World Trade Center lost ground.</p>
+      <p>I haven't yet traced the causes of individual shifts, so this shows where demand moved, not why.</p>
+    </div>
+    <div class="compare">
+      <table>
+        <caption>Estimated deliveries per day, January to July</caption>
+        <thead><tr><th scope="col">Neighborhood</th><th scope="col">2025</th><th scope="col">2026</th><th scope="col">Change</th></tr></thead>
+        <tbody class="small">
+          <tr><td>Inwood</td><td>1,625</td><td>1,860</td><td class="save">+14.4%</td></tr>
+          <tr><td>Financial District South</td><td>1,104</td><td>1,235</td><td class="save">+11.9%</td></tr>
+          <tr><td>Central Harlem North</td><td>3,751</td><td>3,988</td><td class="save">+6.3%</td></tr>
+          <tr><td>Washington Heights North</td><td>2,225</td><td>2,361</td><td class="save">+6.1%</td></tr>
+          <tr><td>Penn Station / Madison Sq West</td><td>3,449</td><td>3,072</td><td class="down">−10.9%</td></tr>
+          <tr><td>World Trade Center</td><td>1,636</td><td>1,507</td><td class="down">−7.9%</td></tr>
+          <tr><td>Battery Park City</td><td>1,827</td><td>1,703</td><td class="down">−6.8%</td></tr>
+          <tr><td>Garment District</td><td>2,055</td><td>1,939</td><td class="down">−5.6%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="reading">
+  <div class="wrap">
+    <h2>What I take from this</h2>
+    <div class="readings">
+      <div class="reading"><h3>Uptown is where demand and airspace line up</h3><p>The 13 busiest neighborhood pairs are all short hops of about 1 to 2 km in Harlem, East Harlem, Washington Heights and the Upper East Side. Every one of them fits under ceilings of 300 to 400 ft.</p></div>
+      <div class="reading"><h3>Downtown's busy pairs sit under the lowest ceilings</h3><p>Routes between the Lower East Side, East Village, TriBeCa, West Village and Chelsea cross 0 ft cells. Six of the top 25 pairs stay blocked even with a detour.</p></div>
+      <div class="reading"><h3>Demand doesn't follow housing</h3><p>The link between delivery demand and housing density is close to zero in every time window: −0.15 in the morning, −0.07 at lunch and +0.10 at dinner. Midtown Center leads the morning and lunch; the East Village leads dinner.</p></div>
+      <div class="reading"><h3>Where I'd start</h3><p>Central Harlem North to East Harlem North. It's one of the busiest pairs at about 390 trips a day, 1.7 km apart, never below a 300 ft ceiling, and about 5 minutes faster than a car.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="limits">
+      <h2>What this can't tell you</h2>
+      <div class="cols">
+        <p><strong>Orders are modeled.</strong> Delivery counts come from ride-hail trips scaled to citywide totals, not from real orders.</p>
+        <p><strong>Routes are zone to zone.</strong> They connect neighborhood centers on a 100 m grid and ignore building heights.</p>
+        <p><strong>Airspace is partial.</strong> Helicopter corridors, temporary flight restrictions and landing sites aren't modeled.</p>
+        <p><strong>This isn't flight approval.</strong> It's a planning study. Real operations need FAA authorization and an NYPD permit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h3>Data sources</h3>
+      <ul>
+        <li>NYC Taxi and Limousine Commission, high-volume for-hire trip records</li>
+        <li>NYC Department of Health restaurant inspections</li>
+        <li>NYC Department of City Planning, PLUTO</li>
+        <li>NYC Department of Consumer and Worker Protection, delivery app reports</li>
+        <li>FAA UAS Facility Maps</li>
+      </ul>
+      <h3 style="margin-top:28px">More charts and data</h3>
+      <ul>
+        <li><a href="results/1c_heatmap.html">Day by hour heatmap</a></li>
+        <li><a href="results/2_top_zones.html">Top 15 neighborhoods</a></li>
+        <li><a href="results/3_scatter.html">Demand vs housing density</a></li>
+        <li><a href="results/5_routes_all_day.csv">Route table (CSV)</a></li>
+        <li><a href="results/4_zone_change.csv">Neighborhood change (CSV)</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Get in touch</h3>
+      <ul>
+        <li><a href="https://www.linkedin.com/in/hajonglim-engineering" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://github.com/hj927000-hub" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="../">Portfolio home</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Load each interactive result if the file sits next to this page; otherwise say how to add it.
+  document.querySelectorAll('.embed').forEach(async el => {
+    const src = el.dataset.src;
+    try {
+      const res = await fetch(src, { method: 'HEAD' });
+      if (!res.ok) throw new Error(res.status);
+      const f = document.createElement('iframe');
+      f.src = src; f.loading = 'lazy'; f.title = el.closest('.panel').querySelector('h3').textContent;
+      el.appendChild(f);
+    } catch {
+      el.innerHTML = '<div class="empty"><p>Chart not found.<br>Put <code>' + src + '</code> in the same folder as this page.</p></div>';
+    }
+  });
+</script>
+</body>
+</html>
