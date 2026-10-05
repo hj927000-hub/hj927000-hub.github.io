@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Medical drone routes across the East River | HJ Lim</title>
+<meta name="description" content="Under today's over-water rule, medical drones in Manhattan only pay off where both hospitals sit on the water. A route-level analysis of time, cost and airspace.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --moss:#3B3A2B; --moss-deep:#2B2A1F; --moss-line:#55533F;
+  --cream:#F3EDDF; --paper:#E8E1CE; --paper-2:#DED6BF; --sage:#AEAE92; --ink:#2B2A1F; --ink-2:#5E5C48;
+  --chart:#5B7FB0; --chart-soft:#A9BEDB; --road:#7A7862; --ferry:#B8995A; --rust:#B5643C; --pass:#4F7A5A; --fail:#A5523A;
+  --display:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --text:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  --r-lg:28px; --r-md:18px; --r-sm:10px; --wrap:1180px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--moss);color:var(--cream);font:400 17px/1.62 var(--text);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--chart);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 28px}
+h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:-.01em;margin:0}
+p{margin:0 0 1em}
+.eyebrow{display:inline-block;font:600 12px/1.6 var(--text);letter-spacing:.16em;text-transform:uppercase;color:var(--sage)}
+.on-light .eyebrow{color:var(--ink-2)}
+
+/* nav */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(43,42,31,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--moss-line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:20px}
+.mark{font:500 19px/1 var(--display);text-decoration:none;white-space:nowrap}
+nav ul{display:flex;gap:26px;list-style:none;margin:0;padding:0;overflow-x:auto}
+nav ul a{text-decoration:none;color:var(--sage);font-size:15px;white-space:nowrap}
+nav ul a:hover{color:var(--cream)}
+@media (max-width:820px){nav ul{display:none}}
+
+/* hero */
+.hero{background:var(--moss-deep);border-bottom:1px solid var(--moss-line);padding:84px 0 72px}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:end}
+.hero h1{font-size:clamp(40px,5.6vw,74px);line-height:1.02;margin:18px 0 26px}
+.hero h1 em{font-style:italic;color:var(--chart-soft)}
+.lede{font-size:19px;color:var(--cream);max-width:58ch;opacity:.92}
+.byline{font-size:15px;color:var(--sage);margin-top:22px}
+.byline strong{color:var(--cream);font-weight:600}
+.verdict{border:1px solid var(--moss-line);border-radius:var(--r-lg);padding:30px;background:linear-gradient(160deg,rgba(91,127,176,.10),rgba(43,42,31,0))}
+.verdict .big{font:400 clamp(54px,7vw,88px)/1 var(--display);color:var(--cream)}
+.verdict .big small{font-size:.42em;color:var(--sage);margin-left:6px}
+.verdict p{color:var(--sage);font-size:15px;margin:10px 0 0}
+.verdict hr{border:0;border-top:1px solid var(--moss-line);margin:24px 0}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr}}
+
+section{padding:88px 0}
+.section-head{max-width:820px;margin-bottom:36px}
+.section-head h2{font-size:clamp(30px,3.6vw,44px);line-height:1.12;margin-top:14px}
+.section-head p{color:var(--sage);margin-top:16px;font-size:17px}
+
+/* executive summary */
+.exec{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.exec .card{border:1px solid var(--moss-line);border-radius:var(--r-md);padding:28px;background:rgba(43,42,31,.45)}
+.exec .num{font:300 46px/1 var(--display);color:var(--chart-soft)}
+.exec h3{font-size:23px;line-height:1.22;margin:16px 0 12px}
+.exec p{color:var(--sage);font-size:15.5px;margin:0}
+.recommend{margin-top:20px;border-radius:var(--r-md);background:var(--cream);color:var(--ink);padding:28px 32px;display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center}
+.recommend .tag{font:600 12px/1 var(--text);letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:var(--cream);padding:10px 14px;border-radius:999px;white-space:nowrap}
+.recommend p{margin:0;font:400 21px/1.4 var(--display)}
+@media (max-width:900px){.exec{grid-template-columns:1fr}.recommend{grid-template-columns:1fr}}
+
+/* SCQA */
+.scqa{background:var(--paper);color:var(--ink);border-radius:var(--r-lg);padding:44px;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.scqa div{padding:0 26px;border-left:1px solid #CFC6AE}
+.scqa div:first-child{padding-left:0;border-left:0}
+.scqa .k{font:600 12px/1 var(--text);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.scqa h3{font-size:22px;line-height:1.25;margin:14px 0 10px}
+.scqa p{font-size:15.5px;color:var(--ink-2);margin:0}
+.scqa div:last-child h3{color:#2F4E78}
+@media (max-width:960px){.scqa{grid-template-columns:1fr 1fr;gap:28px 0}.scqa div:nth-child(3){padding-left:0;border-left:0}}
+@media (max-width:620px){.scqa{grid-template-columns:1fr;padding:30px}.scqa div{padding:0;border-left:0}}
+
+/* exhibits */
+.exhibit{background:var(--cream);color:var(--ink);border-radius:var(--r-lg);padding:40px 40px 30px;margin:28px 0 0}
+@media (max-width:620px){.exhibit{padding:26px 20px 20px}}
+.exhibit-head{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;flex-wrap:wrap;margin-bottom:22px}
+.exhibit-head .label{font:600 12px/1 var(--text);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.exhibit-head h3{font-size:clamp(23px,2.4vw,30px);line-height:1.2;margin-top:10px;max-width:30ch}
+.source{font-size:13px;color:var(--ink-2);border-top:1px solid #D9D0B8;padding-top:14px;margin-top:20px}
+.chart-box{overflow-x:auto}
+.chart-box svg{display:block;width:100%;height:auto;min-width:620px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13.5px;color:var(--ink-2);margin:4px 0 14px}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:14px;height:14px;border-radius:3px;display:inline-block}
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center}
+.seg{display:inline-flex;background:var(--paper);border-radius:999px;padding:4px;gap:2px}
+.seg button{font:500 13.5px/1 var(--text);border:0;background:transparent;color:var(--ink-2);padding:9px 14px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--cream)}
+.ctl-label{font:600 11px/1 var(--text);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-right:8px}
+.ctl{display:inline-flex;align-items:center}
+
+/* map */
+.map-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:32px;align-items:start}
+.map-grid svg{width:100%;height:auto;display:block;border-radius:var(--r-md)}
+.route-card{border:1px solid #D9D0B8;border-radius:var(--r-md);padding:22px;margin-bottom:16px;cursor:pointer;transition:border-color .2s,background .2s}
+.route-card[aria-pressed="true"]{border-color:var(--ink);background:var(--paper)}
+.route-card .rt{display:flex;align-items:center;gap:10px;font:600 12px/1 var(--text);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.route-card .rt i{width:22px;height:3px;border-radius:2px;display:inline-block}
+.route-card h4{font:400 21px/1.25 var(--display);margin:10px 0 12px}
+.legs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:13px;color:var(--ink-2)}
+.legs b{display:block;font:400 26px/1.1 var(--display);color:var(--ink)}
+@media (max-width:900px){.map-grid{grid-template-columns:1fr}}
+
+/* scorecard */
+.score{width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px;min-width:620px}
+.score th{font:600 11.5px/1.2 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);text-align:left;padding:12px 14px;border-bottom:1px solid #CFC6AE}
+.score td{padding:14px;border-bottom:1px solid #E2DAC4;vertical-align:top}
+.score td.rowh{font:400 19px/1.25 var(--display)}
+.score td.rowh small{display:block;font:400 13px/1.4 var(--text);color:var(--ink-2);margin-top:4px}
+.cell{display:flex;flex-direction:column;gap:6px}
+.chip{display:inline-flex;align-self:flex-start;align-items:center;gap:6px;font:600 12px/1 var(--text);padding:7px 10px;border-radius:999px}
+.chip.pass{background:rgba(79,122,90,.14);color:var(--pass)}
+.chip.fail{background:rgba(165,82,58,.12);color:var(--fail)}
+.chip.off{background:#E2DAC4;color:var(--ink-2)}
+.delta{font:400 22px/1 var(--display)}
+.delta small{font:400 12.5px/1 var(--text);color:var(--ink-2);margin-left:4px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:8px}
+.stat{border:1px solid var(--moss-line);border-radius:var(--r-md);padding:24px}
+.stat b{display:block;font:300 48px/1 var(--display);color:var(--cream)}
+.stat p{color:var(--sage);font-size:14.5px;margin:10px 0 0}
+@media (max-width:900px){.stats{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.stats{grid-template-columns:1fr}}
+
+/* split narrative */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.panel{border-radius:var(--r-lg);padding:38px}
+.panel.dark{border:1px solid var(--moss-line);background:var(--moss-deep)}
+.panel.light{background:var(--paper);color:var(--ink)}
+.panel h3{font-size:28px;line-height:1.18;margin:14px 0 16px}
+.panel p{font-size:16px}
+.panel.dark p{color:var(--sage)}
+.panel.light p{color:var(--ink-2)}
+.panel.light .eyebrow{color:var(--ink-2)}
+.panel ol{margin:0;padding-left:20px}
+.panel li{margin-bottom:12px}
+.panel.light li{color:var(--ink-2)}
+.panel li b{color:var(--ink)}
+@media (max-width:900px){.split{grid-template-columns:1fr}}
+
+/* risk table / method */
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px}
+.tbl th{text-align:left;font:600 11.5px/1.2 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);padding:10px 12px;border-bottom:1px solid #CFC6AE}
+.tbl td{padding:12px;border-bottom:1px solid #E2DAC4;vertical-align:top;color:var(--ink)}
+.tbl td:first-child{font-weight:600}
+.tbl .basis{font-size:12.5px;color:var(--ink-2)}
+.method{background:var(--paper);color:var(--ink);border-radius:var(--r-lg);padding:44px}
+.method .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px 48px}
+.method h3{font-size:24px;margin-bottom:12px}
+.method p{color:var(--ink-2);font-size:15.5px}
+.method p.formula{color:var(--ink)}
+.formula{font:400 18px/1.5 var(--display);background:var(--cream);border-radius:var(--r-sm);padding:14px 18px;margin:0 0 12px}
+@media (max-width:820px){.method{padding:30px}.method .cols{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--moss-line);padding:48px 0 64px;color:var(--sage);font-size:15px}
+footer .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:40px}
+footer h3{color:var(--cream);font-size:22px;margin-bottom:10px}
+footer ul{list-style:none;padding:0;margin:0;line-height:2}
+@media (max-width:760px){footer .wrap{grid-template-columns:1fr}}
+
+/* svg text */
+.ax{font:500 12px var(--text);fill:#6E6B56}
+.axb{font:600 12px var(--text);fill:#2B2A1F}
+.val{font:600 12px var(--text);fill:#2B2A1F}
+.valm{font:500 11.5px var(--text);fill:#7A7862}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--cream);font-size:13px;padding:8px 11px;border-radius:8px;opacity:0;transition:opacity .12s;z-index:50;max-width:260px}
+</style>
+</head>
+<body>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<nav aria-label="Page">
+  <div class="wrap">
+    <a class="mark" href="/">HJ Lim</a>
+    <ul>
+      <li><a href="#summary">Summary</a></li>
+      <li><a href="#context">Context</a></li>
+      <li><a href="#routes">Routes</a></li>
+      <li><a href="#time">Time</a></li>
+      <li><a href="#economics">Economics</a></li>
+      <li><a href="#outlook">Outlook</a></li>
+      <li><a href="#method">Method</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Low-altitude Manhattan · Report S0 · October 2026</span>
+      <h1>Medical drones only pay off where <em>both hospitals sit on the water.</em></h1>
+      <p class="lede">New York's first medical drone route crosses the East River in about four minutes. I modeled what happens on the rest of the trip, hospital door to hospital door, and asked where a second route should go under today's over-water rule.</p>
+      <p class="byline"><strong>Hajong (HJ) Lim</strong>, process engineer in battery manufacturing. Model estimates from public data; assumptions listed in full under <a href="#method">Method</a>.</p>
+    </div>
+    <aside class="verdict" aria-label="Headline numbers">
+      <span class="eyebrow">Proposed route vs. road, morning</span>
+      <div class="big">14<small>min faster</small></div>
+      <p>E 34th St ↔ Sunset Park, NYU Langone to NYU Langone Brooklyn, door to door.</p>
+      <hr>
+      <span class="eyebrow">Current trial route vs. road, morning</span>
+      <div class="big">5<small>min slower</small></div>
+      <p>Downtown Skyport ↔ Brooklyn Marine Terminal. Slower than driving whenever it flies.</p>
+    </aside>
+  </div>
+</header>
+
+<main>
+
+<section id="summary">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Executive summary</span>
+      <h2>Under the over-water rule, drones work as a proof of concept, not yet as a business.</h2>
+    </div>
+    <div class="exec">
+      <article class="card">
+        <div class="num">01</div>
+        <h3>The river is not the bottleneck. The land legs are.</h3>
+        <p>The trial route crosses in minutes, but its Brooklyn pad is 2.1 miles from the nearest same-system hospital. Hospital to hospital, it is 5 to 8 minutes slower than a car at every hour it operates.</p>
+      </article>
+      <article class="card">
+        <div class="num">02</div>
+        <h3>Pad location decides whether drones beat the road.</h3>
+        <p>Put both pads beside waterfront hospitals and the same drone wins by 14 minutes in the morning and 26 in the evening rush, and the drone leg can cost up to $106 a trip, not $30, before driving is cheaper.</p>
+      </article>
+      <article class="card">
+        <div class="num">03</div>
+        <h3>The market is small until drones can fly inland.</h3>
+        <p>Of four candidate hospital pairs screened, one has both ends on the water. Allow over-land flight and both routes beat the road by 8 to 26 minutes. The business case sits in the next rule change, not in this one.</p>
+      </article>
+    </div>
+    <div class="recommend">
+      <span class="tag">Recommendation</span>
+      <p>Site the second route between waterfront hospitals of one health system, fly it into the evening rush, and first run a two-week test to measure long-route flight time, the one number that can flip this result.</p>
+    </div>
+  </div>
+</section>
+
+<section id="context" style="padding-top:0">
+  <div class="wrap">
+    <div class="scqa on-light">
+      <div><span class="k">Situation</span><h3>NYC is moving freight onto the water and into the air.</h3><p>The Port Authority and Skyports fly light medical cargo between Downtown Skyport and Brooklyn Marine Terminal, weekdays 9 to 5, through April 2027.</p></div>
+      <div><span class="k">Complication</span><h3>Both pads are on the water. Most hospitals are not.</h3><p>Drones may only fly over water today, so every trip starts and ends with a ground leg through Manhattan and Brooklyn traffic.</p></div>
+      <div><span class="k">Question</span><h3>Where should the second route go?</h3><p>Which hospital pairs, at which hours, actually beat a car on time and cost under current rules?</p></div>
+      <div><span class="k">Answer</span><h3>Between waterfront hospitals, at rush hour.</h3><p>Value is real but narrow. Scale depends on over-land flight being allowed.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="routes" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Two routes compared</span>
+      <h2>The trial route leaves 2.7 miles of ground travel. A waterfront pair leaves 0.6.</h2>
+      <p>Both routes link two hospitals of the same health system, where lab and pharmacy shipments already move. Drones fly only over water; everything else is a car or cargo bike.</p>
+    </div>
+    <figure class="exhibit" style="margin:0">
+      <div class="exhibit-head">
+        <div><span class="label">Exhibit 1</span><h3>Ground legs, not flight distance, separate the two routes</h3></div>
+      </div>
+      <div class="map-grid">
+        <div id="map" aria-label="Map of the two drone routes, hospitals, pads and heliport zones"></div>
+        <div>
+          <div class="route-card" data-route="A" role="button" tabindex="0" aria-pressed="false">
+            <div class="rt"><i style="background:var(--road)"></i>Route A · current trial</div>
+            <h4>Downtown Skyport ↔ Brooklyn Marine Terminal</h4>
+            <p style="font-size:14px;color:var(--ink-2);margin:0 0 12px">NYP Lower Manhattan → NYP Brooklyn Methodist</p>
+            <div class="legs" id="legsA"></div>
+          </div>
+          <div class="route-card" data-route="B" role="button" tabindex="0" aria-pressed="true">
+            <div class="rt"><i style="background:var(--chart)"></i>Route B · proposed</div>
+            <h4>E 34th St Heliport ↔ Sunset Park waterfront</h4>
+            <p style="font-size:14px;color:var(--ink-2);margin:0 0 12px">NYU Langone Tisch → NYU Langone Brooklyn</p>
+            <div class="legs" id="legsB"></div>
+          </div>
+          <div class="legend" style="margin-top:6px">
+            <span><i style="background:#C2185B;border-radius:50%"></i>Hospital</span>
+            <span><i style="background:var(--ink);clip-path:polygon(50% 0,100% 100%,0 100%)"></i>Drone pad</span>
+            <span><i style="background:rgba(181,100,60,.25);border-radius:50%"></i>0.5 mi heliport zone</span>
+          </div>
+        </div>
+      </div>
+      <figcaption class="source">Coordinates approximate. Water paths follow the East River and Upper Bay. Heliports: Downtown Skyport (JRB), E 34th St (6N5), W 30th St (JRA).</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="time" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Delivery time</span>
+      <h2>The waterfront route wins at rush hour. The trial route never wins.</h2>
+      <p>Door-to-door minutes for four ways of moving one shipment. Switch the route, drone operating hours, and the trial flight time used to calibrate drone speed.</p>
+    </div>
+    <figure class="exhibit" style="margin:0">
+      <div class="exhibit-head">
+        <div><span class="label">Exhibit 2</span><h3 id="ex2title">Door-to-door minutes by time of day</h3></div>
+        <div class="controls">
+          <div class="ctl"><span class="ctl-label">Route</span><div class="seg" data-key="route"><button data-v="A">A · trial</button><button data-v="B" aria-pressed="true">B · proposed</button></div></div>
+          <div class="ctl"><span class="ctl-label">Hours</span><div class="seg" data-key="hours"><button data-v="trial" aria-pressed="true">9–17 only</button><button data-v="ext">All day</button></div></div>
+          <div class="ctl"><span class="ctl-label">Trial flight</span><div class="seg" data-key="flight"><button data-v="f4" aria-pressed="true">4 min</button><button data-v="f7">7 min</button></div></div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--road)"></i>Road (car direct)</span>
+        <span><i style="background:var(--chart)"></i>Port + drone</span>
+        <span><i style="background:var(--ferry)"></i>Port + ferry + car</span>
+        <span><i style="background:transparent;border:1.5px dashed var(--chart)"></i>Drone only, over land (future rule)</span>
+        <span><i style="background:repeating-linear-gradient(45deg,#CFC6AE 0 3px,transparent 3px 6px)"></i>Drone not flying</span>
+      </div>
+      <div class="chart-box" id="ex2"></div>
+      <figcaption class="source">Model estimate. Car speeds anchored on Manhattan CBD averages (~7–8 mph daytime, ~14 mph early morning); cargo bikes ~10 mph; drone block speed from the trial (1.1 mi in 4 or 7 min, takeoff and landing included). Skyports reports ~4 min; a Community Board briefing described ~7 min.</figcaption>
+    </figure>
+
+    <figure class="exhibit">
+      <div class="exhibit-head">
+        <div><span class="label">Exhibit 3</span><h3 id="ex3title">Only route B clears the bar, and only at rush hour</h3></div>
+        <p style="max-width:44ch;font-size:14.5px;color:var(--ink-2);margin:6px 0 0">A route counts as <b>viable</b> when port + drone is at least <b>10 minutes</b> faster than driving. Ten minutes is the smallest gap that clears the model's ±20% error on car times. Follows the controls above.</p>
+      </div>
+      <div class="chart-box"><table class="score" id="score"></table></div>
+      <figcaption class="source">Port + drone compared with driving the whole way. "Not flying" means outside the selected drone operating hours.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="economics" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Unit economics</span>
+      <h2>Moving the pads raises what a drone leg can cost from $30 to $106 a trip.</h2>
+      <p>The operator's cost per flight is not public, so I solved for the break-even: the most the drone leg can cost before driving the whole way is cheaper. A credible drone leg should be able to cost at least as much as the cheapest Manhattan STAT courier run, $65.</p>
+    </div>
+    <figure class="exhibit" style="margin:0">
+      <div class="exhibit-head">
+        <div><span class="label">Exhibit 4</span><h3>Short ground legs leave room in the budget for the flight</h3></div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--road)"></i>Road, full trip</span>
+        <span><i style="background:var(--ink)"></i>Port + drone, ground legs only</span>
+        <span><i style="background:transparent;border:1.5px dashed var(--chart)"></i>Room left for the drone leg (break-even)</span>
+        <span><i style="background:var(--rust);height:3px"></i>$65 benchmark</span>
+      </div>
+      <div class="chart-box" id="ex4"></div>
+      <figcaption class="source">One-way shipment at midday, courier returns to base. Labor $38/h (car) and $30/h (cargo bike), vehicle $0.90/mi and $0.15/mi, $9 congestion toll, 30% contract margin. Market rates: Manhattan bike STAT from $65; cross-borough car STAT from $150.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="outlook" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Why not now, and what changes it</span>
+      <h2>The binding constraint is a rule about where drones may fly, not the drones.</h2>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>1 of 4</b><p>candidate hospital pairs screened have both ends within about half a mile of the water</p></div>
+      <div class="stat"><b>0 min</b><p>evening-rush flying under the trial's 9-to-5 window, when route B's gain would be largest (26 min)</p></div>
+      <div class="stat"><b>72%</b><p>of route A's water path lies within 0.5 mi of a heliport; 17% for route B. Both Manhattan pads are active heliports</p></div>
+      <div class="stat"><b>11–14</b><p>mph: the drone block speed below which route B loses its daytime edge. At the 7-minute reading it is 9.4</p></div>
+    </div>
+
+    <figure class="exhibit">
+      <div class="exhibit-head">
+        <div><span class="label">Exhibit 5</span><h3>Allowing over-land flight turns both routes into winners</h3></div>
+        <p style="max-width:44ch;font-size:14.5px;color:var(--ink-2);margin:6px 0 0">Minutes saved versus driving. Today's rule forces a ground leg at each end; an over-land route flies rooftop to rooftop.</p>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--chart)"></i>Today: over water only (port + drone)</span>
+        <span><i style="background:transparent;border:1.5px dashed var(--chart)"></i>Future rule: over-land, rooftop to rooftop</span>
+      </div>
+      <div class="chart-box" id="ex5"></div>
+      <figcaption class="source">Same model, 4-minute trial calibration. Over-land flight would require FAA approval to fly beyond visual line of sight and over people, plus NYPD takeoff and landing permits in New York City.</figcaption>
+    </figure>
+
+    <div class="split" style="margin-top:28px">
+      <div class="panel dark">
+        <span class="eyebrow">Why it is not a business yet</span>
+        <h3>Geography caps the market under the over-water rule.</h3>
+        <p>A per-trip break-even of $106 only matters with volume. Pads, staff and aircraft are fixed costs, and very few hospital pairs sit on the water at both ends. A handful of rush-hour trips cannot carry them. That matches how the operator describes the trial: roughly break-even.</p>
+        <p>Two more limits stack on top: the trial does not fly in the evening rush, and both Manhattan pads share airspace with helicopters landing below 1,000 feet.</p>
+      </div>
+      <div class="panel light">
+        <span class="eyebrow">What would make it work</span>
+        <h3>Three moves, cheapest first.</h3>
+        <ol>
+          <li><b>Measure the long route.</b> A two-week test on E 34th St ↔ Sunset Park settles the flight time that decides route B.</li>
+          <li><b>Fly the rush.</b> Extend operations to 5–7 pm, where the road is slowest and the gain is largest.</li>
+          <li><b>Open inland corridors.</b> Over-land approval converts a niche into a network: both modeled routes would beat the road by 8 to 26 minutes, with no ground legs at all. First customer: a health system with waterfront campuses on both sides, such as NYU Langone.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="risks" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Risks and sensitivities</span>
+      <h2>What could change the answer.</h2>
+    </div>
+    <div class="exhibit" style="margin:0">
+      <div class="chart-box">
+      <table class="tbl">
+        <thead><tr><th>Factor</th><th>Effect on the conclusion</th><th>How to resolve</th></tr></thead>
+        <tbody>
+          <tr><td>Drone flight time</td><td>At the 7-minute reading, route B loses its morning and midday edge and barely wins the evening rush.</td><td>Two-week test flights on the long route.</td></tr>
+          <tr><td>Car travel times</td><td>Speeds are anchored on CBD averages, not trip-level data; ±20% is plausible.</td><td>NYC TLC trip records by zone pair and hour.</td></tr>
+          <tr><td>Reliability, not averages</td><td>Hospitals feel the late days. A drone's real edge may be predictability, which averages hide.</td><td>Compare 90th-percentile times, not means.</td></tr>
+          <tr><td>Wind and weather</td><td>Changes the water leg the way traffic changes the road.</td><td>Seasonal wind model on the over-water path.</td></tr>
+          <tr><td>Helicopter airspace</td><td>Proximity is a 0.5-mile proxy, not flight-track data.</td><td>ADS-B tracks around JRB and 6N5.</td></tr>
+          <tr><td>Market size</td><td>Only four pairs screened. A full count could raise or lower the waterfront share.</td><td>Census of all hospital pairs within 0.5 mi of water.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="method" style="padding-top:0">
+  <div class="wrap">
+    <div class="method on-light">
+      <span class="eyebrow">Method and assumptions</span>
+      <div class="cols" style="margin-top:22px">
+        <div>
+          <h3>How each trip is built</h3>
+          <p class="formula">leg time = straight-line distance × 1.35 ÷ speed + stop time</p>
+          <p class="formula">cost = (labor + vehicle + tolls) × 1.30</p>
+          <p class="formula">drone break-even = road cost − ground-leg cost</p>
+          <p>Each mode is a chain of legs: car or cargo bike to the pad, drone over water, ground leg to the destination. Splitting legs shows exactly where time is gained and lost. Port + drone uses whichever of car or bike is faster for each ground leg.</p>
+        </div>
+        <div>
+          <h3>Key assumptions</h3>
+          <table class="tbl">
+            <tbody>
+              <tr><td>Detour factor</td><td>1.35 <span class="basis">· grid-street typical</span></td></tr>
+              <tr><td>Car speed</td><td>6.5–22 mph by area and hour <span class="basis">· anchored on CBD data</span></td></tr>
+              <tr><td>Cargo bike</td><td>9.5–11 mph <span class="basis">· 9.9 mph observed in congestion</span></td></tr>
+              <tr><td>Stop time</td><td>8 min car, 3 min bike <span class="basis">· parking search ~28% of van time</span></td></tr>
+              <tr><td>Drone block speed</td><td>16.5 mph (4 min) or 9.4 mph (7 min) <span class="basis">· trial</span></td></tr>
+              <tr><td>Drone hours</td><td>Weekdays 9–17 <span class="basis">· trial</span></td></tr>
+              <tr><td>Ferry wait</td><td>15 min (half a 30-min headway)</td></tr>
+              <tr><td>Coordinates</td><td>Approximate</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p style="margin-top:26px;font-size:14px">Sources: Port Authority of NY &amp; NJ and Skyports Drone Services trial announcements (2026); The Broadsheet, Community Board 1 coverage (2026); NYCEDC Blue Highways; MTA Congestion Relief Zone toll schedule; NBER working paper on congestion pricing travel speeds; NYC DOT freight and cargo-bike program materials; NYMTC Hub Bound Travel 2022; NYC Ferry South Brooklyn schedule; 14 CFR Part 93 Subpart W (Hudson and East River Exclusions); NYS DOH Health Facility General Information; published medical courier rates (2026).</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h3>About this report</h3>
+      <p>Part of <a href="../">Low-altitude Manhattan</a>, a self-directed project on where delivery drones could fly in New York. This is the S0 scenario: current rules, over-water flight only. Feedback from people working in hospital logistics, drone operations or city freight is very welcome.</p>
+    </div>
+    <div>
+      <h3>Contact</h3>
+      <ul>
+        <li><a href="https://www.linkedin.com/in/hajonglim-engineering">LinkedIn</a></li>
+        <li><a href="https://github.com/hj927000-hub">GitHub</a></li>
+        <li><a href="../">Back to the airspace and demand study</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+const DATA = {"f4": {"times": [{"situation": "A", "period": "Morning 8-10", "mode": "Road (car direct)", "minutes": 31.7, "operating": true}, {"situation": "A", "period": "Morning 8-10", "mode": "Drone only*", "minutes": 19.7, "operating": true}, {"situation": "A", "period": "Morning 8-10", "mode": "Port + drive (ferry)", "minutes": 64.3, "operating": true}, {"situation": "A", "period": "Morning 8-10", "mode": "Port + drone", "minutes": 36.9, "operating": true}, {"situation": "A", "period": "Midday 12-14", "mode": "Road (car direct)", "minutes": 28.1, "operating": true}, {"situation": "A", "period": "Midday 12-14", "mode": "Drone only*", "minutes": 19.7, "operating": true}, {"situation": "A", "period": "Midday 12-14", "mode": "Port + drive (ferry)", "minutes": 62.5, "operating": true}, {"situation": "A", "period": "Midday 12-14", "mode": "Port + drone", "minutes": 35.7, "operating": true}, {"situation": "A", "period": "Evening rush 17-19", "mode": "Road (car direct)", "minutes": 37.0, "operating": true}, {"situation": "A", "period": "Evening rush 17-19", "mode": "Drone only*", "minutes": 19.7, "operating": false}, {"situation": "A", "period": "Evening rush 17-19", "mode": "Port + drive (ferry)", "minutes": 66.9, "operating": true}, {"situation": "A", "period": "Evening rush 17-19", "mode": "Port + drone", "minutes": 36.9, "operating": false}, {"situation": "A", "period": "Night 21+", "mode": "Road (car direct)", "minutes": 19.8, "operating": true}, {"situation": "A", "period": "Night 21+", "mode": "Drone only*", "minutes": 19.7, "operating": false}, {"situation": "A", "period": "Night 21+", "mode": "Port + drive (ferry)", "minutes": 55.3, "operating": true}, {"situation": "A", "period": "Night 21+", "mode": "Port + drone", "minutes": 33.4, "operating": false}, {"situation": "B", "period": "Morning 8-10", "mode": "Road (car direct)", "minutes": 60.0, "operating": true}, {"situation": "B", "period": "Morning 8-10", "mode": "Drone only*", "minutes": 33.7, "operating": true}, {"situation": "B", "period": "Morning 8-10", "mode": "Port + drive (ferry)", "minutes": 96.8, "operating": true}, {"situation": "B", "period": "Morning 8-10", "mode": "Port + drone", "minutes": 46.4, "operating": true}, {"situation": "B", "period": "Midday 12-14", "mode": "Road (car direct)", "minutes": 52.0, "operating": true}, {"situation": "B", "period": "Midday 12-14", "mode": "Drone only*", "minutes": 33.7, "operating": true}, {"situation": "B", "period": "Midday 12-14", "mode": "Port + drive (ferry)", "minutes": 96.4, "operating": true}, {"situation": "B", "period": "Midday 12-14", "mode": "Port + drone", "minutes": 46.2, "operating": true}, {"situation": "B", "period": "Evening rush 17-19", "mode": "Road (car direct)", "minutes": 71.6, "operating": true}, {"situation": "B", "period": "Evening rush 17-19", "mode": "Drone only*", "minutes": 33.7, "operating": false}, {"situation": "B", "period": "Evening rush 17-19", "mode": "Port + drive (ferry)", "minutes": 97.4, "operating": true}, {"situation": "B", "period": "Evening rush 17-19", "mode": "Port + drone", "minutes": 46.4, "operating": false}, {"situation": "B", "period": "Night 21+", "mode": "Road (car direct)", "minutes": 34.0, "operating": true}, {"situation": "B", "period": "Night 21+", "mode": "Drone only*", "minutes": 33.7, "operating": false}, {"situation": "B", "period": "Night 21+", "mode": "Port + drive (ferry)", "minutes": 94.8, "operating": true}, {"situation": "B", "period": "Night 21+", "mode": "Port + drone", "minutes": 45.7, "operating": false}]}, "costs": [{"situation": "A", "mode": "Road (car direct)", "land_and_fees": 68.1, "drone_leg": "", "drone_breakeven_vs_road": NaN}, {"situation": "A", "mode": "Drone only*", "land_and_fees": 0.0, "drone_leg": "not public", "drone_breakeven_vs_road": 68.1}, {"situation": "A", "mode": "Port + drive (ferry)", "land_and_fees": 72.8, "drone_leg": "", "drone_breakeven_vs_road": NaN}, {"situation": "A", "mode": "Port + drone", "land_and_fees": 37.9, "drone_leg": "not public", "drone_breakeven_vs_road": 30.2}, {"situation": "B", "mode": "Road (car direct)", "land_and_fees": 119.7, "drone_leg": "", "drone_breakeven_vs_road": NaN}, {"situation": "B", "mode": "Drone only*", "land_and_fees": 0.0, "drone_leg": "not public", "drone_breakeven_vs_road": 119.7}, {"situation": "B", "mode": "Port + drive (ferry)", "land_and_fees": 41.9, "drone_leg": "", "drone_breakeven_vs_road": NaN}, {"situation": "B", "mode": "Port + drone", "land_and_fees": 14.0, "drone_leg": "not public", "drone_breakeven_vs_road": 105.7}], "heli": [{"situation": "A", "route": "Port + drone (water path)", "flight_mi": 0.74, "mi_near_heliports": 0.53, "starts_or_ends_at_heliport": true, "share_near_heliports": 0.72}, {"situation": "A", "route": "Drone only* (straight line)", "flight_mi": 3.22, "mi_near_heliports": 0.4, "starts_or_ends_at_heliport": false, "share_near_heliports": 0.12}, {"situation": "B", "route": "Port + drone (water path)", "flight_mi": 8.42, "mi_near_heliports": 1.44, "starts_or_ends_at_heliport": true, "share_near_heliports": 0.17}, {"situation": "B", "route": "Drone only* (straight line)", "flight_mi": 7.07, "mi_near_heliports": 0.44, "starts_or_ends_at_heliport": false, "share_near_heliports": 0.06}], "routes": {"A": {"water": [[40.7012, -74.009], [40.6985, -74.0045], [40.6925, -74.0015]], "m": "NYP Lower Manhattan", "b": "NYP Brooklyn Methodist", "mpad": "Downtown Skyport (JRB)", "bpad": "BMT Pier 7", "first_mi": 0.66, "last_mi": 2.06, "water_mi": 0.74}, "B": {"water": [[40.7425, -73.9719], [40.73, -73.9695], [40.715, -73.9745], [40.7062, -73.9975], [40.7, -74.0045], [40.6945, -74.0135], [40.686, -74.0175], [40.674, -74.028], [40.66, -74.04], [40.645, -74.029]], "m": "NYU Langone Tisch", "b": "NYU Langone Brooklyn", "mpad": "E 34th St Heliport (6N5)", "bpad": "Sunset Park pad (BAT)", "first_mi": 0.1, "last_mi": 0.46, "water_mi": 8.42}}, "places": {"Downtown Skyport (JRB)": [40.7012, -74.009], "Pier 11": [40.7033, -74.006], "E 34th St Heliport (6N5)": [40.7425, -73.9719], "W 30th St Heliport (JRA)": [40.7545, -74.0071], "BMT Pier 7": [40.6925, -74.0015], "Pier 6": [40.6925, -73.999], "Sunset Park pad (BAT)": [40.645, -74.029], "NYP Lower Manhattan": [40.7103, -74.005], "NYP Brooklyn Methodist": [40.6681, -73.979], "NYU Langone Tisch": [40.7421, -73.9738], "NYU Langone Brooklyn": [40.6461, -74.0204]}, "heliports": ["Downtown Skyport (JRB)", "E 34th St Heliport (6N5)", "W 30th St Heliport (JRA)"], "f7": {"times": [{"situation": "A", "period": "Morning 8-10", "mode": "Road (car direct)", "minutes": 31.7, "operating": true}, {"situation": "A", "period": "Morning 8-10", "mode": "Drone only*", "minutes": 28.5, "operating": true}, {"situation": "A", "period": "Morning 8-10", "mode": "Port + drive (ferry)", "minutes": 64.3, "operating": true}, {"situation": "A", "period": "Morning 8-10", "mode": "Port + drone", "minutes": 38.9, "operating": true}, {"situation": "A", "period": "Midday 12-14", "mode": "Road (car direct)", "minutes": 28.1, "operating": true}, {"situation": "A", "period": "Midday 12-14", "mode": "Drone only*", "minutes": 28.5, "operating": true}, {"situation": "A", "period": "Midday 12-14", "mode": "Port + drive (ferry)", "minutes": 62.5, "operating": true}, {"situation": "A", "period": "Midday 12-14", "mode": "Port + drone", "minutes": 37.8, "operating": true}, {"situation": "A", "period": "Evening rush 17-19", "mode": "Road (car direct)", "minutes": 37.0, "operating": true}, {"situation": "A", "period": "Evening rush 17-19", "mode": "Drone only*", "minutes": 28.5, "operating": false}, {"situation": "A", "period": "Evening rush 17-19", "mode": "Port + drive (ferry)", "minutes": 66.9, "operating": true}, {"situation": "A", "period": "Evening rush 17-19", "mode": "Port + drone", "minutes": 38.9, "operating": false}, {"situation": "A", "period": "Night 21+", "mode": "Road (car direct)", "minutes": 19.8, "operating": true}, {"situation": "A", "period": "Night 21+", "mode": "Drone only*", "minutes": 28.5, "operating": false}, {"situation": "A", "period": "Night 21+", "mode": "Port + drive (ferry)", "minutes": 55.3, "operating": true}, {"situation": "A", "period": "Night 21+", "mode": "Port + drone", "minutes": 35.4, "operating": false}, {"situation": "B", "period": "Morning 8-10", "mode": "Road (car direct)", "minutes": 60.0, "operating": true}, {"situation": "B", "period": "Morning 8-10", "mode": "Drone only*", "minutes": 53.0, "operating": true}, {"situation": "B", "period": "Morning 8-10", "mode": "Port + drive (ferry)", "minutes": 96.8, "operating": true}, {"situation": "B", "period": "Morning 8-10", "mode": "Port + drone", "minutes": 69.4, "operating": true}, {"situation": "B", "period": "Midday 12-14", "mode": "Road (car direct)", "minutes": 52.0, "operating": true}, {"situation": "B", "period": "Midday 12-14", "mode": "Drone only*", "minutes": 53.0, "operating": true}, {"situation": "B", "period": "Midday 12-14", "mode": "Port + drive (ferry)", "minutes": 96.4, "operating": true}, {"situation": "B", "period": "Midday 12-14", "mode": "Port + drone", "minutes": 69.1, "operating": true}, {"situation": "B", "period": "Evening rush 17-19", "mode": "Road (car direct)", "minutes": 71.6, "operating": true}, {"situation": "B", "period": "Evening rush 17-19", "mode": "Drone only*", "minutes": 53.0, "operating": false}, {"situation": "B", "period": "Evening rush 17-19", "mode": "Port + drive (ferry)", "minutes": 97.4, "operating": true}, {"situation": "B", "period": "Evening rush 17-19", "mode": "Port + drone", "minutes": 69.4, "operating": false}, {"situation": "B", "period": "Night 21+", "mode": "Road (car direct)", "minutes": 34.0, "operating": true}, {"situation": "B", "period": "Night 21+", "mode": "Drone only*", "minutes": 53.0, "operating": false}, {"situation": "B", "period": "Night 21+", "mode": "Port + drive (ferry)", "minutes": 94.8, "operating": true}, {"situation": "B", "period": "Night 21+", "mode": "Port + drone", "minutes": 68.7, "operating": false}]}, "map": {"w": 560, "h": 738.7, "paths": {"Staten Island": "M-86.2 661.3 L-80.1 664.8 L-81.2 662.4 L-79.0 660.3 L-80.5 663.1 L-76.2 668.0 L-71.8 664.6 L-74.5 669.0 L-68.7 674.2 L-73.7 679.2 L-66.2 677.9 L-78.6 680.8 L-65.7 680.7 L-77.9 683.9 L-77.1 688.0 L-64.5 687.1 L-77.9 690.3 L-77.9 701.0 L-74.9 703.6 L-79.6 705.8 L-79.6 708.9 L-66.7 709.3 L-79.3 710.8 L-73.6 712.2 L-79.1 712.9 L-76.8 729.2 L-79.0 738.3 L-77.5 748.3 L-56.1 756.9 L-77.2 750.0 L-74.3 780.7 L-63.6 800.0 L-49.5 813.1 L-47.2 810.5 L-48.2 814.1 L-45.0 811.4 L-50.3 817.8 L-42.9 819.5 L-39.9 817.2 L-43.5 821.0 L-38.4 822.0 L-40.2 824.0 L-27.7 838.8 L-23.3 852.3 L-86.2 852.3 L-86.2 661.3Z", "Queens": "M646.1 374.3 L616.8 352.6 L621.7 346.3 L612.1 338.9 L616.8 332.8 L573.4 298.9 L578.3 292.4 L574.9 289.5 L571.9 279.2 L564.1 272.7 L565.7 272.3 L563.8 266.3 L571.5 260.9 L579.1 261.3 L571.9 259.2 L564.6 244.1 L563.3 230.5 L559.3 225.5 L562.5 218.2 L578.4 219.8 L579.9 217.7 L560.4 213.0 L541.8 191.7 L518.9 186.9 L503.8 178.9 L499.2 174.0 L488.4 148.6 L469.8 139.2 L489.1 129.3 L501.5 108.4 L495.3 106.8 L496.9 109.5 L490.3 123.4 L483.7 130.0 L464.6 136.9 L435.9 126.0 L420.4 127.5 L406.1 135.9 L398.0 131.8 L399.7 125.0 L403.8 123.2 L401.0 120.1 L404.0 118.7 L404.5 114.6 L402.5 113.7 L404.1 110.0 L407.0 105.1 L410.2 105.1 L406.4 101.5 L410.8 102.6 L411.9 100.7 L410.4 100.7 L408.6 100.2 L408.7 99.8 L414.5 99.1 L411.5 98.6 L415.1 96.9 L410.7 95.4 L415.7 96.7 L412.1 93.5 L416.1 92.5 L413.6 90.5 L423.0 74.8 L438.6 81.1 L439.2 79.1 L424.8 73.7 L427.5 70.5 L425.6 70.0 L429.3 68.1 L430.5 70.3 L435.1 58.0 L480.3 -14.2 L496.1 -34.0 L499.9 -33.9 L517.4 -45.7 L516.9 -52.1 L519.1 -52.9 L517.1 -53.3 L519.4 -53.8 L506.3 -59.8 L504.8 -65.7 L505.5 -74.4 L511.0 -84.8 L516.6 -90.6 L521.6 -91.6 L530.8 -90.2 L539.0 -80.8 L544.5 -82.9 L563.3 -97.2 L578.5 -113.6 L646.2 -113.6 L646.1 374.3Z", "Brooklyn": "M433.9 130.1 L467.3 142.5 L464.4 151.4 L464.9 156.8 L467.0 156.6 L466.8 148.5 L471.4 144.3 L473.9 145.2 L473.0 150.7 L475.9 146.1 L485.1 151.0 L490.4 158.2 L496.5 175.8 L507.8 186.4 L541.7 196.6 L547.6 205.4 L557.4 238.3 L560.8 237.1 L561.8 243.4 L560.0 247.8 L543.3 251.6 L539.7 255.4 L540.7 263.0 L529.0 267.2 L533.1 274.3 L527.1 278.1 L529.7 286.4 L524.3 289.9 L530.3 287.9 L536.9 302.7 L531.8 284.9 L535.1 283.2 L531.5 283.9 L530.5 280.9 L536.6 277.4 L533.9 269.3 L545.2 264.0 L543.2 257.9 L545.9 255.2 L562.1 250.5 L568.4 259.4 L560.5 265.5 L562.9 272.0 L571.9 279.2 L574.9 289.5 L578.3 292.4 L573.4 298.9 L616.8 332.8 L612.1 338.9 L621.7 346.3 L616.8 352.6 L646.2 374.4 L646.2 380.8 L642.7 385.7 L646.2 388.2 L646.2 768.7 L597.3 738.4 L592.2 742.4 L646.2 776.7 L646.2 839.3 L636.8 829.5 L638.4 827.5 L635.6 828.1 L637.1 826.1 L635.3 827.6 L634.2 821.8 L628.6 823.0 L631.7 826.5 L628.3 826.5 L633.3 831.1 L632.6 831.8 L628.2 826.6 L629.1 823.9 L626.1 826.3 L645.9 847.2 L646.2 852.3 L604.8 852.3 L603.4 841.2 L608.0 837.3 L605.9 835.6 L597.0 843.4 L599.1 841.8 L597.7 843.1 L599.9 844.4 L597.1 844.1 L599.3 847.1 L596.1 844.1 L599.5 852.3 L74.5 852.3 L63.0 833.3 L56.4 783.0 L60.0 748.9 L78.4 699.0 L70.3 694.7 L78.7 698.1 L83.1 689.6 L78.6 684.0 L90.1 668.7 L97.7 672.9 L105.5 663.2 L111.7 668.2 L111.3 667.2 L112.6 665.6 L111.6 667.2 L115.4 670.4 L124.7 657.6 L108.8 645.0 L110.3 643.2 L126.1 655.6 L128.9 655.0 L130.9 652.6 L124.0 646.3 L129.7 651.1 L132.9 649.9 L128.7 645.9 L126.9 637.6 L129.9 633.0 L124.7 630.7 L126.9 628.0 L130.2 632.5 L132.5 629.9 L127.4 625.4 L132.8 629.6 L138.5 629.7 L127.6 620.9 L145.4 631.6 L140.7 625.5 L146.9 629.3 L134.4 619.1 L142.3 623.8 L145.7 620.2 L137.0 613.1 L143.8 615.7 L145.8 612.5 L143.7 608.7 L156.3 616.6 L158.9 614.3 L150.5 606.1 L159.9 613.3 L163.0 609.2 L151.6 599.5 L165.2 606.0 L166.3 604.4 L154.6 594.5 L156.8 591.8 L168.6 601.1 L170.4 598.7 L160.5 590.4 L160.7 588.4 L172.1 596.9 L174.8 593.2 L161.7 582.7 L170.0 575.3 L185.9 585.7 L189.1 581.2 L176.5 570.9 L182.4 568.3 L199.9 582.3 L204.8 576.4 L192.2 565.9 L195.8 561.0 L199.5 560.4 L210.4 569.1 L212.4 566.6 L218.5 571.4 L210.1 563.7 L211.4 561.9 L220.5 568.7 L221.9 566.8 L211.1 561.0 L212.7 559.9 L203.9 552.3 L206.2 551.6 L208.8 553.7 L207.3 554.9 L211.8 556.0 L210.9 557.7 L212.1 557.3 L212.6 553.8 L212.6 557.4 L221.3 564.0 L214.2 553.1 L216.0 550.8 L232.0 563.1 L238.9 554.6 L224.3 542.8 L237.0 537.2 L241.1 531.6 L242.2 513.6 L235.6 530.0 L227.4 530.8 L224.5 537.8 L211.7 534.1 L207.5 545.2 L206.9 545.2 L216.4 518.6 L213.5 517.5 L204.4 539.5 L206.4 530.7 L194.5 531.1 L187.2 550.7 L169.1 553.6 L164.1 552.0 L159.9 546.3 L156.9 520.5 L153.6 513.5 L161.5 516.9 L165.9 551.5 L167.9 551.9 L168.3 548.5 L184.0 547.0 L192.4 528.0 L187.2 524.0 L186.8 519.4 L175.5 524.3 L186.3 519.0 L175.4 514.9 L171.4 518.5 L177.2 512.1 L175.6 510.6 L169.4 516.8 L181.0 503.8 L179.4 502.3 L171.8 510.5 L166.6 506.2 L174.1 497.7 L172.5 496.2 L158.7 511.7 L155.9 510.0 L162.5 502.2 L159.3 500.5 L160.1 492.9 L155.6 493.8 L159.8 485.7 L151.8 485.2 L151.0 482.4 L154.7 482.2 L154.3 478.3 L157.5 477.8 L157.6 475.0 L152.2 475.1 L158.3 474.1 L152.8 471.8 L153.9 467.9 L181.7 445.3 L184.7 449.4 L176.2 456.2 L180.8 463.6 L195.3 447.3 L190.5 441.2 L185.5 443.8 L202.5 430.3 L211.6 430.7 L224.1 406.7 L232.8 408.4 L233.9 405.6 L228.4 398.6 L229.4 395.4 L239.2 371.0 L241.8 369.8 L248.8 351.5 L259.9 332.8 L258.5 331.5 L260.3 327.4 L270.8 325.6 L272.0 329.1 L275.9 329.4 L279.0 324.2 L287.3 326.5 L288.8 323.1 L308.3 320.2 L319.1 321.8 L319.2 318.7 L327.2 318.4 L326.3 320.7 L328.2 319.0 L328.7 321.3 L330.0 318.4 L328.0 317.8 L330.2 318.2 L329.4 324.6 L335.1 328.3 L333.8 334.1 L335.4 335.2 L340.5 325.5 L336.3 336.4 L339.6 339.9 L343.2 335.5 L340.3 341.2 L346.6 343.2 L341.5 354.7 L348.4 344.9 L355.8 351.3 L350.0 343.6 L352.4 342.8 L362.8 352.4 L351.8 338.6 L353.9 336.8 L366.9 350.9 L368.4 349.3 L353.9 333.3 L369.4 344.5 L370.5 342.4 L356.2 330.4 L361.4 332.6 L361.8 330.6 L346.1 317.8 L351.2 320.0 L355.2 317.0 L346.2 308.6 L347.9 306.7 L361.4 319.0 L361.6 312.8 L354.3 302.1 L356.2 300.7 L365.0 313.1 L365.4 324.3 L376.9 332.8 L377.0 329.8 L369.2 323.4 L366.4 299.4 L367.9 293.8 L365.8 292.8 L372.7 279.4 L371.1 277.1 L377.9 255.8 L387.0 242.8 L386.1 238.1 L390.0 238.3 L396.5 227.1 L402.1 211.0 L400.1 209.4 L418.1 212.2 L416.0 208.0 L402.3 205.3 L404.9 188.8 L399.4 158.8 L416.5 135.6 L422.5 131.3 L433.9 130.1Z", "Manhattan": "M212.7 427.4 L203.2 424.0 L205.0 419.3 L215.4 422.7 L212.7 427.4ZM217.1 419.2 L207.7 415.8 L209.5 411.0 L220.5 415.2 L217.1 419.2ZM222.2 411.3 L212.1 407.8 L213.9 402.9 L224.1 406.7 L222.2 411.3ZM49.5 410.9 L53.0 408.2 L53.6 409.3 L45.7 417.5 L35.3 409.4 L32.4 411.3 L31.3 409.6 L34.9 408.8 L33.7 403.5 L38.4 402.7 L49.5 410.9ZM233.9 405.6 L216.3 399.1 L217.9 394.7 L228.4 398.6 L233.9 405.6ZM170.6 391.7 L179.0 397.1 L186.3 395.9 L179.5 397.6 L186.0 403.1 L180.2 419.6 L163.5 426.9 L165.2 429.5 L171.7 429.3 L165.1 430.1 L161.4 435.4 L164.6 429.8 L163.2 427.0 L148.4 436.0 L149.9 438.5 L153.4 437.0 L146.7 441.0 L149.6 438.6 L148.1 436.1 L139.6 441.1 L141.6 444.5 L137.6 449.3 L140.6 444.4 L138.9 441.6 L130.7 443.3 L123.5 438.6 L123.1 430.8 L149.9 397.5 L151.9 391.4 L170.6 391.7ZM229.4 395.4 L219.7 390.9 L222.0 386.1 L231.5 390.4 L229.4 395.4ZM232.8 386.0 L223.9 382.0 L226.6 376.6 L235.8 380.9 L232.8 386.0ZM241.8 368.4 L232.4 364.2 L234.8 359.3 L243.9 363.3 L241.8 368.4ZM245.4 359.3 L236.8 355.3 L239.2 350.4 L247.7 354.3 L245.4 359.3ZM64.8 347.2 L74.5 356.0 L72.2 361.6 L67.5 363.0 L59.3 354.9 L57.1 357.1 L65.0 365.3 L57.5 372.4 L48.8 363.5 L59.9 349.5 L64.8 347.2ZM251.1 347.3 L244.9 343.7 L253.3 333.1 L257.9 335.4 L251.1 347.3ZM493.9 -48.3 L441.4 27.9 L418.2 56.2 L402.6 69.8 L413.5 47.8 L443.3 6.5 L475.0 -44.2 L486.2 -57.0 L495.1 -62.1 L493.9 -48.3ZM555.8 -113.6 L545.0 -108.0 L537.7 -113.6 L555.8 -113.6ZM479.1 -113.6 L481.5 -98.4 L483.7 -99.7 L484.5 -97.1 L482.9 -94.4 L486.4 -84.8 L482.8 -72.0 L399.6 42.5 L362.1 99.6 L363.1 102.3 L361.1 101.7 L358.0 109.5 L354.7 129.4 L355.4 148.8 L347.1 145.4 L348.8 147.0 L346.7 148.3 L353.0 152.4 L354.3 150.5 L353.5 153.0 L350.9 153.7 L347.0 151.6 L351.5 174.5 L359.8 186.1 L359.7 196.9 L351.0 245.6 L337.2 286.7 L331.7 292.3 L317.5 294.2 L317.7 296.4 L286.9 300.4 L285.2 295.7 L245.2 303.9 L231.8 313.3 L230.9 317.2 L234.4 321.4 L230.7 324.6 L225.9 320.9 L228.4 325.4 L226.5 325.7 L222.6 320.3 L221.3 321.4 L224.1 325.2 L221.2 321.5 L217.2 325.1 L221.9 330.7 L216.2 325.9 L213.9 327.8 L218.5 335.1 L212.5 329.0 L208.5 331.3 L214.1 337.7 L213.3 338.5 L207.7 332.0 L196.8 341.2 L199.4 345.8 L203.5 343.5 L201.0 348.5 L195.6 341.7 L188.8 343.9 L190.3 351.1 L188.9 347.2 L184.9 348.4 L185.4 352.1 L183.5 348.8 L182.6 351.7 L180.5 349.4 L180.4 353.6 L176.8 346.7 L175.7 351.6 L173.8 347.6 L172.0 350.5 L171.9 350.4 L173.7 347.5 L163.1 336.9 L161.2 328.5 L156.5 327.1 L161.6 325.8 L155.6 325.4 L153.6 317.7 L158.6 307.8 L155.7 306.6 L160.4 279.4 L160.2 282.1 L165.3 283.2 L166.6 276.1 L161.3 274.9 L160.6 278.0 L164.9 246.5 L180.0 248.2 L181.3 240.3 L174.4 235.6 L181.1 236.8 L180.6 229.9 L182.9 230.1 L186.7 205.3 L171.6 202.7 L171.8 200.0 L187.2 202.0 L187.9 191.9 L174.9 190.6 L176.2 178.1 L188.8 179.3 L189.6 168.6 L189.8 164.7 L176.6 162.9 L190.7 162.1 L190.3 159.1 L185.2 158.7 L190.3 157.5 L191.8 136.0 L188.9 134.2 L191.9 134.3 L192.2 129.7 L187.0 129.2 L187.3 125.7 L183.6 126.4 L183.9 123.9 L187.3 125.2 L187.6 121.7 L184.6 121.6 L182.4 120.8 L195.4 121.3 L196.4 118.4 L184.7 115.0 L195.9 116.5 L197.8 108.6 L184.7 105.0 L184.8 102.9 L195.9 104.1 L198.6 102.7 L199.3 97.4 L189.1 94.0 L189.3 96.3 L187.9 96.2 L188.9 94.1 L186.4 93.6 L185.9 95.9 L186.6 91.0 L196.2 92.3 L196.6 89.0 L187.2 87.7 L187.3 85.3 L197.1 86.6 L197.6 83.2 L187.8 81.6 L188.2 79.5 L197.9 80.8 L198.4 77.2 L188.6 75.7 L194.1 74.3 L195.7 68.6 L190.4 66.4 L197.1 68.3 L200.2 57.5 L196.7 54.8 L200.6 55.9 L193.9 52.2 L194.0 51.5 L200.9 54.8 L203.6 43.5 L216.2 23.8 L206.8 16.0 L208.8 12.1 L217.5 16.6 L220.5 14.1 L218.3 11.9 L221.1 13.0 L220.0 11.3 L226.9 2.6 L217.3 -3.0 L227.4 1.5 L230.3 -3.7 L220.7 -9.0 L231.0 -4.8 L232.7 -8.1 L223.3 -15.5 L237.2 -8.0 L240.6 -12.5 L227.1 -20.0 L228.1 -22.0 L241.7 -14.6 L243.1 -17.0 L244.3 -20.3 L230.9 -29.7 L245.3 -22.0 L248.2 -27.4 L235.0 -37.0 L249.2 -29.1 L252.2 -34.7 L238.1 -42.5 L249.5 -38.3 L251.7 -42.2 L241.1 -48.1 L242.3 -50.1 L252.8 -44.3 L256.6 -51.3 L254.6 -53.7 L258.8 -54.1 L249.4 -60.0 L259.4 -56.4 L260.9 -59.0 L251.2 -65.4 L262.1 -59.6 L263.5 -62.1 L253.4 -68.1 L263.0 -63.5 L284.9 -100.5 L273.9 -100.9 L284.8 -101.6 L289.5 -113.6 L479.1 -113.6Z"}, "bounds": [-74.055, -73.925, 40.632, 40.762]}};
+const PERIODS = ["Morning 8-10","Midday 12-14","Evening rush 17-19","Night 21+"];
+const PLABEL = {"Morning 8-10":"Morning","Midday 12-14":"Midday","Evening rush 17-19":"Evening rush","Night 21+":"Night"};
+const PSUB = {"Morning 8-10":"8–10 am","Midday 12-14":"12–2 pm","Evening rush 17-19":"5–7 pm","Night 21+":"after 9 pm"};
+const TRIAL_OPS = {"Morning 8-10":true,"Midday 12-14":true,"Evening rush 17-19":false,"Night 21+":false};
+const C = {road:"#7A7862", drone:"#5B7FB0", ferry:"#B8995A", ink:"#2B2A1F", grid:"#E2DAC4", rust:"#B5643C"};
+const state = {route:"B", hours:"trial", flight:"f4"};
+const tip = document.getElementById("tip");
+const ns = "http://www.w3.org/2000/svg";
+function el(tag, attrs={}, parent){const e=document.createElementNS(ns,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function t(sit,period,mode,flight){return DATA[flight||state.flight].times.find(r=>r.situation===sit&&r.period===period&&r.mode===mode).minutes;}
+function ops(period){return state.hours==="ext" || TRIAL_OPS[period];}
+function showTip(e,html){tip.innerHTML=html;tip.style.opacity=1;tip.style.left=(e.clientX+14)+"px";tip.style.top=(e.clientY+14)+"px";}
+function hideTip(){tip.style.opacity=0;}
+
+/* ---------- Exhibit 1: map ---------- */
+(function(){
+  const M = DATA.map, [L0,L1,A0,A1] = M.bounds;
+  const xy = (lat,lon)=>[(lon-L0)/(L1-L0)*M.w, (A1-lat)/(A1-A0)*M.h];
+  const svg = el("svg",{viewBox:`0 0 ${M.w} ${M.h}`,role:"img"});
+  const defs = el("defs",{},svg);
+  const pat = el("pattern",{id:"hatch",width:8,height:8,patternUnits:"userSpaceOnUse"},defs);
+  el("rect",{width:8,height:8,fill:"#EDE6D3"},pat); el("path",{d:"M0 8 L8 0",stroke:"#DDD4BC","stroke-width":1},pat);
+  el("rect",{width:M.w,height:M.h,fill:"url(#hatch)"},svg);
+  for(const [name,d] of Object.entries(M.paths)) el("path",{d,fill:name==="Manhattan"?"#D9D0B6":"#E2DAC2",stroke:"#BDB399","stroke-width":0.8},svg);
+  const lab=(txt,lat,lon,opt={})=>{const [x,y]=xy(lat,lon);const g=el("text",{x,y,class:opt.cls||"ax","text-anchor":opt.anchor||"start",...(opt.attrs||{})},svg);g.textContent=txt;return g;};
+  lab("MANHATTAN",40.758,-74.002,{cls:"axb",attrs:{"letter-spacing":"3","fill":"#8C8770","style":"font-size:11px;fill:#8C8770"}});
+  lab("BROOKLYN",40.690,-73.948,{cls:"axb",attrs:{"letter-spacing":"3","style":"font-size:11px;fill:#8C8770"}});
+  lab("East River",40.722,-73.969,{attrs:{"style":"font:italic 400 13px Newsreader,serif;fill:#8C8770","transform":""}});
+  lab("Upper Bay",40.676,-74.046,{attrs:{"style":"font:italic 400 13px Newsreader,serif;fill:#8C8770"}});
+  const P = DATA.places;
+  const milePx = M.w/((L1-L0)*69.17*Math.cos(40.7*Math.PI/180));
+  DATA.heliports.forEach(h=>{const [x,y]=xy(...P[h]);el("circle",{cx:x,cy:y,r:0.5*milePx,fill:"rgba(181,100,60,.16)",stroke:"rgba(181,100,60,.5)","stroke-dasharray":"3 3"},svg);});
+  const routeG = {};
+  for(const [k,r] of Object.entries(DATA.routes)){
+    const g = el("g",{"data-route":k},svg); routeG[k]=g;
+    const col = k==="B"?C.drone:C.road;
+    const pts = r.water.map(p=>xy(p[0],p[1]).join(",")).join(" ");
+    el("polyline",{points:pts,fill:"none",stroke:col,"stroke-width":k==="B"?3.2:3.2,"stroke-linecap":"round","stroke-linejoin":"round"},g);
+    // ground legs
+    [[r.m,r.mpad],[r.bpad,r.b]].forEach(([a,b])=>{const [x1,y1]=xy(...P[a]),[x2,y2]=xy(...P[b]);el("line",{x1,y1,x2,y2,stroke:"#C2185B","stroke-width":2,"stroke-dasharray":"2 4","stroke-linecap":"round"},g);});
+    [r.mpad,r.bpad].forEach(p=>{const [x,y]=xy(...P[p]);el("path",{d:`M${x} ${y-8} L${x+7} ${y+5} L${x-7} ${y+5} Z`,fill:C.ink},g);});
+    [r.m,r.b].forEach(h=>{const [x,y]=xy(...P[h]);el("circle",{cx:x,cy:y,r:6,fill:"#C2185B",stroke:"#F3EDDF","stroke-width":2},g);});
+  }
+  const labels = [
+    ["NYU Langone Tisch","B",8,-8,"start"],["NYU Langone Brooklyn","B",10,4,"start"],["E 34th St Heliport (6N5)","B",10,14,"start"],["Sunset Park pad (BAT)","B",-10,18,"end"],
+    ["NYP Lower Manhattan","A",-10,-8,"end"],["NYP Brooklyn Methodist","A",10,4,"start"],["Downtown Skyport (JRB)","A",-10,4,"end"],["BMT Pier 7","A",10,14,"start"]];
+  labels.forEach(([n,k,dx,dy,an])=>{const [x,y]=xy(...P[n]);const tx=el("text",{x:x+dx,y:y+dy,"text-anchor":an,class:"val","data-route":k,style:"paint-order:stroke;stroke:#EDE6D3;stroke-width:4px;stroke-linejoin:round"},svg);tx.textContent=n.replace(" (6N5)","").replace(" (JRB)","").replace(" (BAT)","");});
+  // scale bar
+  el("line",{x1:20,y1:M.h-24,x2:20+milePx,y2:M.h-24,stroke:C.ink,"stroke-width":2},svg);
+  const sb=el("text",{x:20,y:M.h-32,class:"ax"},svg); sb.textContent="1 mile";
+  document.getElementById("map").appendChild(svg);
+  const fmt=v=>v.toFixed(1);
+  for(const k of ["A","B"]){const r=DATA.routes[k];document.getElementById("legs"+k).innerHTML=`<div><b>${fmt(r.first_mi)}</b>mi hospital → pad</div><div><b>${fmt(r.water_mi)}</b>mi over water</div><div><b>${fmt(r.last_mi)}</b>mi pad → hospital</div>`;}
+  function focus(k){document.querySelectorAll(".route-card").forEach(c=>c.setAttribute("aria-pressed",c.dataset.route===k));
+    svg.querySelectorAll("[data-route]").forEach(n=>n.style.opacity = n.dataset.route===k?1:.28);}
+  document.querySelectorAll(".route-card").forEach(c=>{c.addEventListener("click",()=>focus(c.dataset.route));c.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();focus(c.dataset.route);}});});
+  focus("B");
+})();
+
+/* ---------- Exhibit 2: grouped bars ---------- */
+const MODES = [["Road (car direct)","Road",C.road,"solid"],["Port + drone","Port + drone",C.drone,"solid"],["Port + drive (ferry)","Port + ferry",C.ferry,"solid"],["Drone only*","Drone only (over land)",C.drone,"dash"]];
+function drawEx2(){
+  const box=document.getElementById("ex2"); box.innerHTML="";
+  const W=1000,H=430,ml=56,mr=20,mt=24,mb=58, iw=W-ml-mr, ih=H-mt-mb;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Grouped bar chart of door-to-door minutes"});
+  const defs=el("defs",{},svg); const p=el("pattern",{id:"off",width:6,height:6,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs); el("rect",{width:3,height:6,fill:"#CFC6AE"},p);
+  const vmax=110, y=v=>mt+ih-(v/vmax)*ih;
+  for(let v=0;v<=vmax;v+=20){el("line",{x1:ml,x2:W-mr,y1:y(v),y2:y(v),stroke:C.grid},svg);const tx=el("text",{x:ml-10,y:y(v)+4,"text-anchor":"end",class:"ax"},svg);tx.textContent=v;}
+  const yl=el("text",{x:14,y:mt+ih/2,transform:`rotate(-90 14 ${mt+ih/2})`,"text-anchor":"middle",class:"ax"},svg); yl.textContent="minutes, door to door";
+  const gw=iw/PERIODS.length, bw=Math.min(40,(gw-40)/MODES.length);
+  PERIODS.forEach((per,i)=>{
+    const gx=ml+i*gw+(gw-bw*MODES.length-(MODES.length-1)*6)/2;
+    const road=t(state.route,per,"Road (car direct)");
+    MODES.forEach(([m,lab,col,sty],j)=>{
+      const v=t(state.route,per,m), x=gx+j*(bw+6), isDrone=m.includes("rone"), on=!isDrone||ops(per);
+      const fill = !on ? "url(#off)" : (sty==="dash" ? "rgba(91,127,176,.12)" : col);
+      const r=el("rect",{x,y:y(v),width:bw,height:y(0)-y(v),rx:3,fill,stroke:sty==="dash"&&on?col:"none","stroke-width":1.6,"stroke-dasharray":sty==="dash"?"4 3":"0"},svg);
+      r.style.transition="all .35s";
+      const lbl=el("text",{x:x+bw/2,y:y(v)-6,"text-anchor":"middle",class:on?"val":"valm"},svg); lbl.textContent=on?Math.round(v):"—";
+      r.addEventListener("mousemove",e=>showTip(e,`<b>${lab}</b> · ${PLABEL[per]}<br>${on?Math.round(v)+" min":"drone not flying"}${on&&m!=="Road (car direct)"?` · ${Math.abs(Math.round(v-road))} min ${v<road?"faster":"slower"} than road`:""}`));
+      r.addEventListener("mouseleave",hideTip);
+    });
+    const d=t(state.route,per,"Port + drone")-road;
+    const lx=ml+i*gw+gw/2;
+    const tl=el("text",{x:lx,y:H-mb+24,"text-anchor":"middle",class:"axb"},svg); tl.textContent=PLABEL[per];
+    const ts=el("text",{x:lx,y:H-mb+42,"text-anchor":"middle",class:"ax"},svg);
+    ts.textContent = ops(per) ? `${PSUB[per]} · port + drone ${Math.abs(Math.round(d))} min ${d<0?"faster":"slower"}` : `${PSUB[per]} · drone not flying`;
+    if(ops(per) && -d>=10) ts.setAttribute("style","fill:#4F7A5A;font-weight:600");
+  });
+  box.appendChild(svg);
+  const wins = PERIODS.filter(p=>ops(p) && (t(state.route,p,"Road (car direct)")-t(state.route,p,"Port + drone"))>=10).map(p=>PLABEL[p].toLowerCase());
+  document.getElementById("ex2title").textContent = state.route==="A"
+    ? "Route A: the trial route is slower than driving whenever it flies"
+    : (wins.length ? `Route B beats the road by 10+ minutes in the ${wins.join(" and ")}` : "Route B: no 10-minute advantage under these settings");
+}
+
+/* ---------- Exhibit 3: scorecard ---------- */
+function drawScore(){
+  const tb=document.getElementById("score");
+  let h=`<thead><tr><th>Route</th>${PERIODS.map(p=>`<th>${PLABEL[p]}<br><span style="font-weight:500;letter-spacing:0;text-transform:none">${PSUB[p]}</span></th>`).join("")}</tr></thead><tbody>`;
+  for(const k of ["A","B"]){
+    const r=DATA.routes[k];
+    h+=`<tr><td class="rowh">Route ${k}<small>${k==="A"?"Skyport ↔ BMT · trial":"E 34th St ↔ Sunset Park · proposed"}</small></td>`;
+    for(const p of PERIODS){
+      if(!ops(p)){h+=`<td><div class="cell"><span class="delta" style="color:#9C9780">—</span><span class="chip off">Not flying</span></div></td>`;continue;}
+      const d=t(k,p,"Road (car direct)")-t(k,p,"Port + drone");
+      const pass=d>=10;
+      h+=`<td><div class="cell"><span class="delta" style="color:${d>=0?"#2B2A1F":"#A5523A"}">${Math.abs(Math.round(d))}<small>min ${d>=0?"faster":"slower"}</small></span><span class="chip ${pass?"pass":"fail"}">${pass?"Viable":"Not viable"}</span></div></td>`;
+    }
+    h+="</tr>";
+  }
+  tb.innerHTML=h+"</tbody>";
+  const v=[];for(const k of ["A","B"])for(const p of PERIODS){if(ops(p)&&t(k,p,"Road (car direct)")-t(k,p,"Port + drone")>=10)v.push([k,PLABEL[p].toLowerCase()]);}
+  document.getElementById("ex3title").textContent = !v.length ? "No route clears the 10-minute bar under these settings"
+    : (v.every(x=>x[0]==="B") ? `Only route B clears the bar: ${v.map(x=>x[1]).join(" and ")}` : "Both routes clear the bar in some periods");
+}
+
+/* ---------- Exhibit 4: economics ---------- */
+(function(){
+  const box=document.getElementById("ex4");
+  const W=1000,H=300,ml=230,mr=60,mt=20,mb=40,iw=W-ml-mr;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Cost per shipment and drone break-even"});
+  const vmax=160, x=v=>ml+v/vmax*iw;
+  for(let v=0;v<=vmax;v+=20){el("line",{x1:x(v),x2:x(v),y1:mt,y2:H-mb,stroke:C.grid},svg);const tx=el("text",{x:x(v),y:H-mb+20,"text-anchor":"middle",class:"ax"},svg);tx.textContent="$"+v;}
+  const cost=(k,m)=>DATA.costs.find(c=>c.situation===k&&c.mode===m);
+  const rows=[["A","Route A · trial"],["B","Route B · proposed"]];
+  const bh=26;
+  rows.forEach(([k,lab],i)=>{
+    const y0=mt+20+i*120;
+    const t1=el("text",{x:0,y:y0+8,class:"axb",style:"font:400 19px Newsreader,serif"},svg); t1.textContent=lab;
+    const road=cost(k,"Road (car direct)").land_and_fees, pd=cost(k,"Port + drone");
+    // road bar
+    let tx=el("text",{x:0,y:y0+36,class:"ax"},svg); tx.textContent="Road, full trip";
+    el("rect",{x:x(0),y:y0+20,width:x(road)-x(0),height:bh,rx:3,fill:C.road},svg);
+    tx=el("text",{x:x(road)+8,y:y0+38,class:"val"},svg); tx.textContent="$"+Math.round(road);
+    // port + drone
+    tx=el("text",{x:0,y:y0+72,class:"ax"},svg); tx.textContent="Port + drone";
+    el("rect",{x:x(0),y:y0+56,width:x(pd.land_and_fees)-x(0),height:bh,rx:3,fill:C.ink},svg);
+    el("rect",{x:x(pd.land_and_fees),y:y0+56,width:x(road)-x(pd.land_and_fees),height:bh,rx:3,fill:"rgba(91,127,176,.14)",stroke:C.drone,"stroke-dasharray":"5 4","stroke-width":1.6},svg);
+    tx=el("text",{x:x(pd.land_and_fees)+(x(road)-x(pd.land_and_fees))/2,y:y0+74,"text-anchor":"middle",class:"val",style:"fill:#2F4E78"},svg);
+    tx.textContent=`drone leg ≤ $${Math.round(pd.drone_breakeven_vs_road)}`;
+    const ok=pd.drone_breakeven_vs_road>=65;
+    tx=el("text",{x:x(road)+8,y:y0+74,class:"val",style:`fill:${ok?"#4F7A5A":"#A5523A"}`},svg); tx.textContent=ok?"clears $65":"below $65";
+  });
+  el("line",{x1:x(65),x2:x(65),y1:mt,y2:H-mb,stroke:C.rust,"stroke-width":2},svg);
+  const bt=el("text",{x:x(65)+6,y:mt+8,class:"val",style:"fill:#B5643C"},svg); bt.textContent="$65 Manhattan bike STAT";
+  box.appendChild(svg);
+})();
+
+/* ---------- Exhibit 5: S0 vs over-land ---------- */
+(function(){
+  const box=document.getElementById("ex5");
+  const W=1000,H=290,ml=230,mr=40,mt=30,mb=40,iw=W-ml-mr;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Minutes saved versus road, over water only versus over land"});
+  const vmin=-15,vmax=30,x=v=>ml+(v-vmin)/(vmax-vmin)*iw;
+  for(let v=vmin;v<=vmax;v+=5){el("line",{x1:x(v),x2:x(v),y1:mt,y2:H-mb,stroke:v===0?"#8C8770":C.grid,"stroke-width":v===0?1.5:1},svg);const tx=el("text",{x:x(v),y:H-mb+20,"text-anchor":"middle",class:"ax"},svg);tx.textContent=(v>0?"+":"")+v;}
+  const at=el("text",{x:x(0)-8,y:mt-10,"text-anchor":"end",class:"ax"},svg); at.textContent="← slower than road";
+  const bt=el("text",{x:x(0)+8,y:mt-10,class:"ax"},svg); bt.textContent="faster than road →";
+  const rows=[["A","Morning 8-10"],["A","Midday 12-14"],["B","Morning 8-10"],["B","Midday 12-14"]];
+  rows.forEach(([k,p],i)=>{
+    const yy=mt+14+i*52, road=t(k,p,"Road (car direct)","f4");
+    const s0=road-t(k,p,"Port + drone","f4"), s2=road-t(k,p,"Drone only*","f4");
+    const lt=el("text",{x:0,y:yy+16,class:"axb",style:"font:400 17px Newsreader,serif"},svg); lt.textContent=`Route ${k} · ${PLABEL[p].toLowerCase()}`;
+    el("rect",{x:Math.min(x(0),x(s0)),y:yy,width:Math.abs(x(s0)-x(0)),height:12,rx:2,fill:C.drone},svg);
+    el("rect",{x:Math.min(x(0),x(s2)),y:yy+16,width:Math.abs(x(s2)-x(0)),height:12,rx:2,fill:"rgba(91,127,176,.12)",stroke:C.drone,"stroke-dasharray":"4 3","stroke-width":1.4},svg);
+    let tx=el("text",{x:x(s0)+(s0>=0?6:-6),y:yy+10,"text-anchor":s0>=0?"start":"end",class:"val"},svg); tx.textContent=(s0>=0?"+":"−")+Math.abs(Math.round(s0));
+    tx=el("text",{x:x(s2)+6,y:yy+26,class:"val",style:"fill:#2F4E78"},svg); tx.textContent="+"+Math.round(s2);
+  });
+  box.appendChild(svg);
+})();
+
+/* ---------- controls ---------- */
+document.querySelectorAll(".seg").forEach(seg=>{
+  seg.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+    seg.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+    state[seg.dataset.key]=b.dataset.v; drawEx2(); drawScore();
+  }));
+  seg.querySelectorAll("button:not([aria-pressed])").forEach(b=>b.setAttribute("aria-pressed","false"));
+});
+drawEx2(); drawScore();
+</script>
+</body>
+</html>
